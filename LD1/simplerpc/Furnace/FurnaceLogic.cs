@@ -7,7 +7,7 @@ using Services;
 /// <summary>
 /// Traffic light state descritor.
 /// </summary>
-public class TrafficLightState
+public class FurnaceState
 {
 	/// <summary>
 	/// Access lock.
@@ -35,7 +35,7 @@ public class TrafficLightState
 /// <para>Traffic light logic.</para>
 /// <para>Thread safe.</para>
 /// </summary>
-class TrafficLightLogic
+class FurnaceLogic
 {
 	/// <summary>
 	/// Logger for this class.
@@ -50,13 +50,13 @@ class TrafficLightLogic
 	/// <summary>
 	/// State descriptor.
 	/// </summary>
-	private TrafficLightState mState = new TrafficLightState();
+	private FurnaceState mState = new TrafficLightState();
 	
 
 	/// <summary>
 	/// Constructor.
 	/// </summary>
-	public TrafficLightLogic()
+	public FurnaceLogic()
 	{
 		//start the background task
 		mBgTaskThread = new Thread(BackgroundTask);

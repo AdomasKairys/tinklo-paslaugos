@@ -5,10 +5,10 @@ using Services;
 /// <summary>
 /// Service
 /// </summary>
-public class TrafficLightService : ITrafficLightService
+public class FurnaceService : IFurnaceService
 {
 	//NOTE: instance-per-request service would need logic to be static or injected from a singleton instance
-	private readonly TrafficLightLogic mLogic = new TrafficLightLogic();
+	private readonly FurnaceLogic mLogic = new FurnaceLogic();
 
 
 	/// <summary>

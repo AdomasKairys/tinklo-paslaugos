@@ -14,7 +14,7 @@ using Services;
 /// <summary>
 /// Client example.
 /// </summary>
-class Client
+class HeaterClient
 {
 	/// <summary>
 	/// A set of names to choose from.
@@ -237,7 +237,7 @@ class Client
 	/// <param name="args">Command line arguments.</param>
 	static void Main(string[] args)
 	{
-		var self = new Client();
+		var self = new HeaterClient();
 		self.Run();
 	}
 }

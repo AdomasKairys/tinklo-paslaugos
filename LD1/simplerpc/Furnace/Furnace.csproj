@@ -11,6 +11,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\TrafficLightContract\TrafficLightContract.csproj"/>
+		<ProjectReference Include="..\FurnaceContract\FurnaceContract.csproj"/>
 	</ItemGroup>
 </Project>
