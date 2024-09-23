@@ -24,9 +24,9 @@ public class FurnaceService : IFurnaceService
 	/// Get current light state.
 	/// </summary>
 	/// <returns>Current light state.</returns>				
-	public LightState GetLightState()
+	public Services.FurnaceState GetFurnaceState()
 	{
-		return mLogic.GetLightState();
+		return mLogic.GetFurnaceState();
 	}
 
 	/// <summary>
@@ -54,7 +54,7 @@ public class FurnaceService : IFurnaceService
 	/// </summary>
 	/// <param name="car">Car descriptor.</param>
 	/// <returns>Pass result descriptor.</returns>
-	public PassAttemptResult Pass(CarDesc car)
+	public CycleAttemptResult Pass(CarDesc car)
 	{
 		return mLogic.Pass(car);
 	}

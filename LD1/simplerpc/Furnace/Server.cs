@@ -84,7 +84,7 @@ public class Server
 		//add our custom services
 		builder.Services
 			// .AddScoped<ITrafficLightService, TrafficLightService>();  //instance-per-request, AddTransient would result in the same
-			.AddSingleton<ITrafficLightService>(new TrafficLightService());   //singleton
+			.AddSingleton<IFurnaceService>(new FurnaceService());   //singleton
 
 		//build the server
 		var app = builder.Build();

@@ -2,89 +2,91 @@
 
 
 /// <summary>
-/// Car descriptor.
+/// Client descriptor.
 /// </summary>
-public class CarDesc
+public class ClientDesc
 {
 	/// <summary>
-	/// Car ID.
+	/// Client ID.
 	/// </summary>
-	public int CarId { get; set; }
+	public int ClientId { get; set; }
 
 	/// <summary>
-	/// Car number.
+	/// Client name and surname.
 	/// </summary>
-	public string CarNumber { get; set; }
+	public string ClientNameSurname { get; set; }
 
-	/// <summary>
-	/// Driver name and surname.
-	/// </summary>
-	public string DriverNameSurname { get; set; }
+	public ClientType ClientType {get; set;}
 }
 
+public enum ClientType : int
+{
+	Heater,
+	Loader
+}
 
 /// <summary>
-/// Descriptor of pass atempt result
+/// Descriptor of loading and heating cycle atempt result
 /// </summary>
-public class PassAttemptResult
+public class CycleAttemptResult
 {
 	/// <summary>
-	/// Indicates if pass attempt has succeeded.
+	/// Indicates if loading/heating attempt has succeeded.
 	/// </summary>
 	public bool IsSuccess { get; set; }
 
 	/// <summary>
-	/// If pass attempt has failed, indicates crash reason.
+	/// If loading/heating attempt has failed, indicates reason.
 	/// </summary>
-	public string CrashReason { get; set; }
+	public string FailReason { get; set; }
 }
 
 
 /// <summary>
-/// Light state.
+/// Furnace state.
 /// </summary>
-public enum LightState : int
+public enum FurnaceState : int
 {
-	Red,
-	Green
+	Melting,
+	Pouring
 }
 
 
 /// <summary>
 /// Service contract.
 /// </summary>
-public interface ITrafficLightService
+public interface IFurnaceService
 {
 	/// <summary>
-	/// Get next unique ID from the server. Is used by cars to acquire client ID's.
+	/// Get next unique ID from the server. Is used by loaders and heaters to acquire client ID's.
 	/// </summary>
 	/// <returns>Unique ID.</returns>
 	int GetUniqueId();
 
 	/// <summary>
-	/// Get current light state.
+	/// Get current furnace state.
 	/// </summary>
-	/// <returns>Current light state.</returns>				
-	LightState GetLightState();
+	/// <returns>Current furnace state.</returns>				
+	FurnaceState GetFurnaceState();
 
 	/// <summary>
 	/// Queue give car at the light. Will only succeed if light is red.
 	/// </summary>
-	/// <param name="car">Car to queue.</param>
+	/// <param name="client">client to queue.</param>
 	/// <returns>True on success, false on failure.</returns>
-	bool Queue(CarDesc car);
+	bool Queue(ClientDesc client);
 
 	/// <summary>
 	/// Tell if car is first in line in queue.
 	/// </summary>
 	/// <param name="carId">ID of the car to check for.</param>
 	/// <returns>True if car is first in line. False if not first in line or not in queue.</returns>
-	bool IsFirstInLine(int carId);
+	bool IsFirstInLine(int clientId);
 
 	/// <summary>
 	/// Try passing the traffic light. If car is in queue, it will be removed from it.
 	/// </summary>
 	/// <param name="car">Car descriptor.</param>
 	/// <returns>Pass result descriptor.</returns>
-	PassAttemptResult Pass(CarDesc car);
+	CycleAttemptResult Pass(ClientDesc client);
 }

@@ -22,7 +22,7 @@ public class FurnaceState
 	/// <summary>
 	/// Light state.
 	/// </summary>
-	public LightState LightState;
+	public Services.FurnaceState FurncState;
 
 	/// <summary>
 	/// Car queue.
@@ -50,7 +50,7 @@ class FurnaceLogic
 	/// <summary>
 	/// State descriptor.
 	/// </summary>
-	private FurnaceState mState = new TrafficLightState();
+	private FurnaceState mState = new FurnaceState();
 	
 
 	/// <summary>
@@ -80,41 +80,41 @@ class FurnaceLogic
 	/// Get current light state.
 	/// </summary>
 	/// <returns>Current light state.</returns>				
-	public LightState GetLightState() 
+	public Services.FurnaceState GetFurnaceState() 
 	{
 		lock( mState.AccessLock )
 		{
-			return mState.LightState;
+			return mState.FurncState;
 		}
 	}
 
 	/// <summary>
 	/// Queue give car at the light. Will only succeed if light is red.
 	/// </summary>
-	/// <param name="car">Car to queue.</param>
+	/// <param name="client">Car to queue.</param>
 	/// <returns>True on success, false on failure.</returns>
-	public bool Queue(CarDesc car)
+	public bool Queue(ClientDesc client)
 	{
 		lock( mState.AccessLock )
 		{
-			mLog.Info($"Car {car.CarId}, RegNr. {car.CarNumber}, Driver {car.DriverNameSurname}, is trying to queue.");
+			mLog.Info($"Client {client.ClientId}, Operator {client.ClientNameSurname}, is trying to queue.");
 
 			//light not red? do not allow to queue
-			if( mState.LightState != LightState.Red )
+			if(mState.FurncState != Services.FurnaceState.Red )
 			{
-				mLog.Info("Queing denied, because light is not red.");
+                mLog.Info("Queing denied, because light is not red.");
 				return false;
 			}
 
 			//already in queue? deny
-			if( mState.CarQueue.Exists(it => it == car.CarId) )
+			if( mState.CarQueue.Exists(it => it == client.ClientId) )
 			{
 				mLog.Info("Queing denied, because car is already in queue.");
 				return false;
 			}
 
 			//queue
-			mState.CarQueue.Add(car.CarId);
+			mState.CarQueue.Add(client.ClientId);
 			mLog.Info("Queuing allowed.");
 
 			//
@@ -145,45 +145,45 @@ class FurnaceLogic
 	/// </summary>
 	/// <param name="car">Car descriptor.</param>
 	/// <returns>Pass result descriptor.</returns>
-	public PassAttemptResult Pass(CarDesc car)
+	public CycleAttemptResult Pass(CarDesc car)
 	{
 		//prepare result descriptor
-		var par = new PassAttemptResult();
+		var par = new CycleAttemptResult();
 
 		lock( mState.AccessLock )
 		{
 			mLog.Info($"Car {car.CarId}, RegNr. {car.CarNumber}, Driver {car.DriverNameSurname}, is trying to pass.");
 
 			//light is red? do not allow to pass
-			if( mState.LightState == LightState.Red )
+			if(mState.FurncState == Services.FurnaceState.Red )
 			{
 				//indicate car crashed
 				par.IsSuccess = false;
 				
 				//set crash reason
-				if( mState.CarQueue.Exists(it => it == car.CarId) )
+				if(mState.CarQueue.Exists(it => it == car.CarId) )
 				{
-					if( mState.CarQueue[0] == car.CarId )
-						par.CrashReason = "tried to run a red light";
+					if(mState.CarQueue[0] == car.CarId )
+						par.FailReason = "tried to run a red light";
 					else
-						par.CrashReason = "hit a car in front of it";
-					
-					//remove car from queue
-					mState.CarQueue = mState.CarQueue.Where(it => it != car.CarId).ToList();
+						par.FailReason = "hit a car in front of it";
+
+                    //remove car from queue
+                    mState.CarQueue = mState.CarQueue.Where(it => it != car.CarId).ToList();
 				}
 				else
 				{
-					par.CrashReason = "tried to run a red light";
+					par.FailReason = "tried to run a red light";
 				}
 			}
 			//light is green, allow to pass if not in queue or first in queue
 			else
 			{
 				//car in queue?
-				if( mState.CarQueue.Exists(it => it == car.CarId) )
+				if(mState.CarQueue.Exists(it => it == car.CarId) )
 				{
 					//first in queue? allow to pass
-					if( mState.CarQueue[0] == car.CarId )
+					if(mState.CarQueue[0] == car.CarId )
 					{
 						par.IsSuccess = true;						
 					}
@@ -191,11 +191,11 @@ class FurnaceLogic
 					else
 					{
 						par.IsSuccess = false;
-						par.CrashReason = "hit a car in front of it";
+						par.FailReason = "hit a car in front of it";
 					}
 
-					//remove car from queue
-					mState.CarQueue = mState.CarQueue.Where(it => it != car.CarId).ToList();
+                    //remove car from queue
+                    mState.CarQueue = mState.CarQueue.Where(it => it != car.CarId).ToList();
 				}
 				//car not in queue
 				{
@@ -210,7 +210,7 @@ class FurnaceLogic
 			}
 			else
 			{
-				mLog.Info($"Car has crashed because '{par.CrashReason}'.");
+				mLog.Info($"Car has crashed because '{par.FailReason}'.");
 			}
 
 			//
@@ -235,12 +235,12 @@ class FurnaceLogic
 			//switch the light
 			lock( mState.AccessLock )
 			{
-				mState.LightState = 
-					mState.LightState == LightState.Red 
-					? LightState.Green 
-					: LightState.Red;
+                mState.FurncState =
+                    mState.FurncState == Services.FurnaceState.Red 
+					? Services.FurnaceState.Green 
+					: Services.FurnaceState.Red;
 
-				mLog.Info($"New light state is '{mState.LightState}'.");
+				mLog.Info($"New light state is '{mState.FurncState}'.");
 			}
 		}
 	}

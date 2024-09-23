@@ -83,11 +83,11 @@ class LoaderClient
 					)
 					.AddSimpleRpcHyperionSerializer();
 
-				sc.AddSimpleRpcProxy<ITrafficLightService>("trafficLightService"); //must be same as on line 77
+				sc.AddSimpleRpcProxy<IFurnaceService>("trafficLightService"); //must be same as on line 77
 
 				var sp = sc.BuildServiceProvider();
 
-				var trafficLight = sp.GetService<ITrafficLightService>();
+				var trafficLight = sp.GetService<IFurnaceService>();
 
 				//initialize car descriptor
 				var car = new CarDesc();
@@ -131,13 +131,13 @@ class LoaderClient
 					while( !isCrashed && !isPassed )
 					{
 						//read the light state
-						var lightState = trafficLight.GetLightState();
+						var lightState = trafficLight.GetFurnaceState();
 
 						//give some time for light to possibly switch, before taking action
 						Thread.Sleep(rnd.Next(500)); 
 
 						//green? try passing without waiting
-						if( lightState == LightState.Green )
+						if( lightState == FurnaceState.Green )
 						{
 							//try passing 
 							mLog.Info("Light is green, trying to pass.");							
@@ -151,7 +151,7 @@ class LoaderClient
 							}
 							else
 							{
-								mLog.Info($"Crashed because '{par.CrashReason}'.");
+								mLog.Info($"Crashed because '{par.FailReason}'.");
 								isCrashed = true;
 							}
 						}
@@ -170,14 +170,14 @@ class LoaderClient
 								while( !isCrashed && !isPassed )
 								{
 									//determine state of light and queue
-									lightState = trafficLight.GetLightState();
+									lightState = trafficLight.GetFurnaceState();
 									var firstInLine = trafficLight.IsFirstInLine(car.CarId);
 
 									//give some time for light to possibly switch, before taking action
 									Thread.Sleep(rnd.Next(500)); 
 
 									//can pass? try it
-									if( lightState == LightState.Green && firstInLine )
+									if( lightState == FurnaceState.Green && firstInLine )
 									{
 										//try passing
 										mLog.Info("Light is green and I an ready, trying to pass");
@@ -191,7 +191,7 @@ class LoaderClient
 										}
 										else
 										{
-											mLog.Info($"Crashed because '{par.CrashReason}'.");
+											mLog.Info($"Crashed because '{par.FailReason}'.");
 											isCrashed = true;
 										}
 									}
