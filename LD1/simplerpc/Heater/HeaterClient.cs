@@ -83,25 +83,21 @@ class HeaterClient
 					)
 					.AddSimpleRpcHyperionSerializer();
 
-				sc.AddSimpleRpcProxy<IFurnaceService>("funrcaveService"); //must be same as on line 77
+				sc.AddSimpleRpcProxy<IFurnaceService>("furnaceService"); //must be same as on line 77
 
 				var sp = sc.BuildServiceProvider();
 
 				var furnace = sp.GetService<IFurnaceService>();
 
 				//initialize client descriptor
-				var client = new ClientDesc();
-
-				client.ClientNameSurname =
-					NAMES[rnd.Next(NAMES.Count)] + 
-					" " +
-					SURNAMES[rnd.Next(SURNAMES.Count)];
-
-				//get unique client id
-				client.ClientId = furnace.GetUniqueId();
+				var client = new ClientDesc(){
+					ClientId = furnace.GetUniqueId(),
+					ClientNameSurname = NAMES[rnd.Next(NAMES.Count)] + 	" " + SURNAMES[rnd.Next(SURNAMES.Count)],
+					GeneratedValue = rnd.Next(500000, 8000000),
+					ClientType = ClientType.Heater };
 
 				//log identity data
-				string s = $"I am a heater {client.ClientId}, Operator {client.ClientNameSurname}.";
+				string s = $"I am a heater {client.ClientId}, Operator {client.ClientNameSurname}, I incresed the heat by {client.GeneratedValue} K.";
 				mLog.Info(s);
 				Console.Title = s;
 					
@@ -126,7 +122,7 @@ class HeaterClient
 						{
 							//try passing 
 							mLog.Info("Furnace is working, trying to increase heat.");							
-							var par = furnace.Pass(client);
+							var par = furnace.FurnacePass(client);
 
 							//handle result
 							if( par.IsSuccess )
@@ -149,7 +145,7 @@ class HeaterClient
 							//success? wait for light and queue
 							if( inQueue )
 							{
-								mLog.Info("I'm in queue now. Waiting for light.");
+								mLog.Info("I'm in queue now. Waiting for furnace to finish pouring.");
 
 								while( !isWaiting && !isHeating )
 								{
@@ -158,14 +154,14 @@ class HeaterClient
 									var firstInLine = furnace.IsFirstInLine(client.ClientId);
 
 									//give some time for light to possibly switch, before taking action
-									Thread.Sleep(rnd.Next(500)); 
+									Thread.Sleep(rnd.Next(2500)); 
 
 									//can pass? try it
 									if( furnaceState == FurnaceState.Melting && firstInLine )
 									{
 										//try passing
-										mLog.Info("Light is green and I an ready, trying to pass");
-										var par = furnace.Pass(client);
+										mLog.Info("Furnace is pouring trying to increase heat. ");
+										var par = furnace.FurnacePass(client);
 
 										//handle result
 										if( par.IsSuccess )
@@ -190,7 +186,7 @@ class HeaterClient
 							//could not queue (maybe light has changed)
 							else
 							{
-								mLog.Info("Queuing failed. Will check the light again.");
+								mLog.Info("Queuing failed. Will check the furnace again.");
 							}
 						}
 					}

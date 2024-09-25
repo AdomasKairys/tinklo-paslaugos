@@ -74,7 +74,7 @@ class LoaderClient
 				var sc = new ServiceCollection();
 				sc
 					.AddSimpleRpcClient(
-						"trafficLightService", //must be same as on line 86
+						"furnaceService", //must be same as on line 86
 						new HttpClientTransportOptions
 						{
 							Url = "http://127.0.0.1:5000/simplerpc",
@@ -83,136 +83,116 @@ class LoaderClient
 					)
 					.AddSimpleRpcHyperionSerializer();
 
-				sc.AddSimpleRpcProxy<IFurnaceService>("trafficLightService"); //must be same as on line 77
+				sc.AddSimpleRpcProxy<IFurnaceService>("furnaceService"); //must be same as on line 77
 
 				var sp = sc.BuildServiceProvider();
 
-				var trafficLight = sp.GetService<IFurnaceService>();
+				var furnace = sp.GetService<IFurnaceService>();
 
-				//initialize car descriptor
-				var car = new CarDesc();
-
-				car.CarNumber = 
-					Enumerable.Range(1, 3)
-						.Select(it => 'A' + rnd.Next('Z'-'A'))
-						.Aggregate("", (res, val) => res + (char)val) +
-					" " +
-					Enumerable.Range(1, 3)
-						.Select(it => '0' + rnd.Next('9' - '0'))
-						.Aggregate("", (res, val) => res + (char)val);
-
-				car.DriverNameSurname =
-					NAMES[rnd.Next(NAMES.Count)] + 
-					" " +
-					SURNAMES[rnd.Next(SURNAMES.Count)];
-
-				//get unique client id
-				car.CarId = trafficLight.GetUniqueId();
+				//initialize client descriptor
+				var client = new ClientDesc(){
+					ClientId = furnace.GetUniqueId(),
+					ClientNameSurname = NAMES[rnd.Next(NAMES.Count)] + 	" " + SURNAMES[rnd.Next(SURNAMES.Count)],
+					GeneratedValue = rnd.Next(1, 5),
+					ClientType = ClientType.Loader };
 
 				//log identity data
-				mLog.Info($"I am car {car.CarId}, RegNr. {car.CarNumber}, Driver {car.DriverNameSurname}.");
-				Console.Title = $"I am car {car.CarId}, RegNr. {car.CarNumber}, Driver {car.DriverNameSurname}.";
+				string s = $"I am a loader {client.ClientId}, Operator {client.ClientNameSurname}, I put {client.GeneratedValue} kg of glass.";
+				mLog.Info(s);
+				Console.Title = s;
 					
-				//do the car stuff
+				//loading
 				while( true )
 				{
-					//car state for this iteration
-					var isCrashed = false;
-					var isPassed = false;
+					var isWaiting = false;
+					var isHeating = false;
 
-					//we are driving on the road
-					mLog.Info("I am driving on the road.");
-					Thread.Sleep(500 + rnd.Next(1500));
+					mLog.Info("I prepare to load glass into furnace.");
 
-					//and we see a traffic light
-					mLog.Info("I see a traffic light.");
-
-					//try passing the traffic light
-					while( !isCrashed && !isPassed )
+					//try increasing the heat
+					while( !isWaiting && !isHeating )
 					{
-						//read the light state
-						var lightState = trafficLight.GetFurnaceState();
+						//read the furnace state
+						var furnaceState = furnace.GetFurnaceState();
 
-						//give some time for light to possibly switch, before taking action
+						//give some time for furnace to possibly switch, before taking action
 						Thread.Sleep(rnd.Next(500)); 
 
-						//green? try passing without waiting
-						if( lightState == FurnaceState.Green )
+						if( furnaceState == FurnaceState.Melting )
 						{
 							//try passing 
-							mLog.Info("Light is green, trying to pass.");							
-							var par = trafficLight.Pass(car);
+							mLog.Info("Furnace is working, trying to load glass.");							
+							var par = furnace.FurnacePass(client);
 
 							//handle result
 							if( par.IsSuccess )
 							{
-								mLog.Info("Passed, life is good.");		
-								isPassed = true;					
+								mLog.Info("Loaded glass, life is good.");		
+								isHeating = true;					
 							}
 							else
 							{
-								mLog.Info($"Crashed because '{par.FailReason}'.");
-								isCrashed = true;
+								mLog.Info($"Failed because '{par.FailReason}'.");
+								isWaiting = true;
 							}
 						}
-						//red, queue until light is green and we can pass
+						//pouring out glass, queue until finished pouring
 						else
 						{
-							//try entering a queue
-							mLog.Info("Light is red, trying to queue.");							
-							var inQueue = trafficLight.Queue(car);
+							mLog.Info("Furnace is pouring, trying to enter queue.");							
+							var inQueue = furnace.Queue(client);
 
 							//success? wait for light and queue
 							if( inQueue )
 							{
-								mLog.Info("I'm in queue now. Waiting for light.");
+								mLog.Info("I'm in queue now. Waiting for furnace to finish pouring.");
 
-								while( !isCrashed && !isPassed )
+								while( !isWaiting && !isHeating )
 								{
 									//determine state of light and queue
-									lightState = trafficLight.GetFurnaceState();
-									var firstInLine = trafficLight.IsFirstInLine(car.CarId);
+									furnaceState = furnace.GetFurnaceState();
+									var firstInLine = furnace.IsFirstInLine(client.ClientId);
 
 									//give some time for light to possibly switch, before taking action
 									Thread.Sleep(rnd.Next(500)); 
 
 									//can pass? try it
-									if( lightState == FurnaceState.Green && firstInLine )
+									if( furnaceState == FurnaceState.Melting && firstInLine )
 									{
 										//try passing
-										mLog.Info("Light is green and I an ready, trying to pass");
-										var par = trafficLight.Pass(car);
+										mLog.Info("Furnace is pouring trying to load glass. ");
+										var par = furnace.FurnacePass(client);
 
-										//handle the result
+										//handle result
 										if( par.IsSuccess )
 										{
-											mLog.Info("Passed, life is good.");	
-											isPassed = true;							
+											mLog.Info("Loaded glass, life is good.");		
+											isHeating = true;					
 										}
 										else
 										{
-											mLog.Info($"Crashed because '{par.FailReason}'.");
-											isCrashed = true;
+											mLog.Info($"Failed because '{par.FailReason}'.");
+											isWaiting = true;
 										}
 									}
 									//no passing yet, wait
 									else
 									{
 										mLog.Info("Waiting some more.");
-										Thread.Sleep(500 + rnd.Next(1500));
+										Thread.Sleep(500 + rnd.Next(2500));
 									}
 								}
 							}
 							//could not queue (maybe light has changed)
 							else
 							{
-								mLog.Info("Queuing failed. Will check the light again.");
+								mLog.Info("Queuing failed. Will check the furnace again.");
 							}
 						}
 					}
 
 					//managed to crash? reflect on it
-					if( isCrashed )
+					if( isWaiting )
 					{
 						mLog.Info("Meditating on my mistakes...");
 						Thread.Sleep(500 + rnd.Next(1500));
@@ -237,7 +217,7 @@ class LoaderClient
 	/// <param name="args">Command line arguments.</param>
 	static void Main(string[] args)
 	{
-		var self = new Client();
+		var self = new LoaderClient();
 		self.Run();
 	}
 }

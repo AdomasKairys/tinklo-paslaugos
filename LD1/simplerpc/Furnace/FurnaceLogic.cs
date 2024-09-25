@@ -4,6 +4,7 @@ using NLog;
 
 using Services;
 
+
 /// <summary>
 /// Traffic light state descritor.
 /// </summary>
@@ -24,10 +25,14 @@ public class FurnaceState
 	/// </summary>
 	public Services.FurnaceState FurncState;
 
+	public int GlassMass = 0; //kilograms
+
+	public double GlassTemperature = 0; //kelvin
+
 	/// <summary>
 	/// Car queue.
 	/// </summary>
-	public List<int> CarQueue = new List<int>();
+	public List<int> ClientQueue = new List<int>();
 }
 
 
@@ -100,21 +105,21 @@ class FurnaceLogic
 			mLog.Info($"Client {client.ClientId}, Operator {client.ClientNameSurname}, is trying to queue.");
 
 			//light not red? do not allow to queue
-			if(mState.FurncState != Services.FurnaceState.Red )
+			if(mState.FurncState != Services.FurnaceState.Pouring )
 			{
                 mLog.Info("Queing denied, because light is not red.");
 				return false;
 			}
 
 			//already in queue? deny
-			if( mState.CarQueue.Exists(it => it == client.ClientId) )
+			if( mState.ClientQueue.Exists(it => it == client.ClientId) )
 			{
 				mLog.Info("Queing denied, because car is already in queue.");
 				return false;
 			}
 
 			//queue
-			mState.CarQueue.Add(client.ClientId);
+			mState.ClientQueue.Add(client.ClientId);
 			mLog.Info("Queuing allowed.");
 
 			//
@@ -125,92 +130,94 @@ class FurnaceLogic
 	/// <summary>
 	/// Tell if car is first in line in queue.
 	/// </summary>
-	/// <param name="carId">ID of the car to check for.</param>
+	/// <param name="clientId">ID of the car to check for.</param>
 	/// <returns>True if car is first in line. False if not first in line or not in queue.</returns>
-	public bool IsFirstInLine(int carId)
+	public bool IsFirstInLine(int clientId)
 	{
 		lock( mState.AccessLock )
 		{
 			//no queue entries? return false
-			if( mState.CarQueue.Count == 0 )
+			if( mState.ClientQueue.Count == 0 )
 				return false;
 
 			//check if first in line
-			return (mState.CarQueue[0] == carId);
+			return mState.ClientQueue[0] == clientId;
 		}
 	}
 
 	/// <summary>
 	/// Try passing the traffic light. If car is in queue, it will be removed from it.
 	/// </summary>
-	/// <param name="car">Car descriptor.</param>
+	/// <param name="client">Car descriptor.</param>
 	/// <returns>Pass result descriptor.</returns>
-	public CycleAttemptResult Pass(CarDesc car)
+	public CycleAttemptResult FurnacePass(ClientDesc client)
 	{
 		//prepare result descriptor
 		var par = new CycleAttemptResult();
 
 		lock( mState.AccessLock )
 		{
-			mLog.Info($"Car {car.CarId}, RegNr. {car.CarNumber}, Driver {car.DriverNameSurname}, is trying to pass.");
+			//mLog.Info($"Car {client.CarId}, RegNr. {client.CarNumber}, Driver {client.DriverNameSurname}, is trying to pass.");
 
 			//light is red? do not allow to pass
-			if(mState.FurncState == Services.FurnaceState.Red )
-			{
-				//indicate car crashed
-				par.IsSuccess = false;
-				
-				//set crash reason
-				if(mState.CarQueue.Exists(it => it == car.CarId) )
-				{
-					if(mState.CarQueue[0] == car.CarId )
-						par.FailReason = "tried to run a red light";
-					else
-						par.FailReason = "hit a car in front of it";
+			bool inQueue = mState.ClientQueue.Exists(it => it == client.ClientId);
 
-                    //remove car from queue
-                    mState.CarQueue = mState.CarQueue.Where(it => it != car.CarId).ToList();
-				}
+			if(mState.FurncState == Services.FurnaceState.Pouring)
+			{
+				par.IsSuccess = false;
+
+				if(!inQueue)
+					par.FailReason = "furnace was pouring";
 				else
 				{
-					par.FailReason = "tried to run a red light";
+					par.FailReason =  mState.ClientQueue[0] == client.ClientId ? "furnace was pouring" : "not first in line";
+					
+                	mState.ClientQueue = mState.ClientQueue.Where(it => it != client.ClientId).ToList();
 				}
 			}
 			//light is green, allow to pass if not in queue or first in queue
 			else
 			{
 				//car in queue?
-				if(mState.CarQueue.Exists(it => it == car.CarId) )
+				if(inQueue && mState.ClientQueue[0] != client.ClientId)
 				{
-					//first in queue? allow to pass
-					if(mState.CarQueue[0] == car.CarId )
+					par.IsSuccess = false;
+					par.FailReason = "not first in line";
+				}
+				else
+				{
+					if(inQueue)
+						mState.ClientQueue = mState.ClientQueue.Where(it => it != client.ClientId).ToList();
+
+					par.IsSuccess = true;
+
+					if(client.ClientType == ClientType.Loader)
 					{
-						par.IsSuccess = true;						
+						int newMass = client.GeneratedValue + mState.GlassMass;
+						mState.GlassTemperature = (GlassProperties.DEFAULT_TEMP*client.GeneratedValue + mState.GlassTemperature*mState.GlassMass)/newMass;
+						mState.GlassMass = newMass;
 					}
-					//not first in queue, crash
+					else if(mState.GlassMass > 0)
+					{
+						mState.GlassTemperature += client.GeneratedValue/(mState.GlassMass*GlassProperties.SPECIFIC_HEAT_CAPACITY);
+					}
 					else
 					{
 						par.IsSuccess = false;
-						par.FailReason = "hit a car in front of it";
+						par.FailReason = "no glass in the furnace";
 					}
 
-                    //remove car from queue
-                    mState.CarQueue = mState.CarQueue.Where(it => it != car.CarId).ToList();
-				}
-				//car not in queue
-				{
-					par.IsSuccess = true;
 				}
 			}
 
 			//log result
 			if( par.IsSuccess )
 			{
-				mLog.Info("Car has passed.");
+				mLog.Info( $"{client.ClientType} was succesfull.");
 			}
 			else
 			{
-				mLog.Info($"Car has crashed because '{par.FailReason}'.");
+				mLog.Info($"{client.ClientType} has failed because '{par.FailReason}'.");
 			}
 
 			//
@@ -235,12 +242,28 @@ class FurnaceLogic
 			//switch the light
 			lock( mState.AccessLock )
 			{
-                mState.FurncState =
-                    mState.FurncState == Services.FurnaceState.Red 
-					? Services.FurnaceState.Green 
-					: Services.FurnaceState.Red;
+				mState.FurncState = mState.GlassTemperature >= GlassProperties.MELTING_TEMP ? Services.FurnaceState.Pouring : Services.FurnaceState.Melting;
+				if(mState.FurncState == Services.FurnaceState.Pouring){
+					mState.GlassMass = 0;
+					mState.GlassTemperature = 0;
+					mLog.Info($"Furnace is pouring molten glass, ammount {mState.GlassMass}.");
+					int num = 0;
+					while (true)
+					{
+						//pours for five seconds
+						num = (num % 5) + 1; 
+						mLog.Info($"{num}...");
+						// wait for 1 second before printing the next value
 
-				mLog.Info($"New light state is '{mState.FurncState}'.");
+						Thread.Sleep(1000); 
+						if (num == 5)
+							break;//exit while loop
+					}
+				}
+				else
+				{
+					mLog.Info($"Furnace is currently melting glass, current glass temperature {mState.GlassTemperature}, ammount of glass in the furnace {mState.GlassMass}");
+				}
 			}
 		}
 	}

@@ -32,11 +32,11 @@ public class FurnaceService : IFurnaceService
 	/// <summary>
 	/// Queue give car at the light. Will only succeed if light is red.
 	/// </summary>
-	/// <param name="car">Car to queue.</param>
+	/// <param name="client">Car to queue.</param>
 	/// <returns>True on success, false on failure.</returns>
-	public bool Queue(CarDesc car) 
+	public bool Queue(ClientDesc client) 
 	{
-		return mLogic.Queue(car);
+		return mLogic.Queue(client);
 	}
 
 	/// <summary>
@@ -52,10 +52,10 @@ public class FurnaceService : IFurnaceService
 	/// <summary>
 	/// Try passing the traffic light. If car is in queue, it will be removed from it.
 	/// </summary>
-	/// <param name="car">Car descriptor.</param>
+	/// <param name="client">Car descriptor.</param>
 	/// <returns>Pass result descriptor.</returns>
-	public CycleAttemptResult Pass(CarDesc car)
+	public CycleAttemptResult FurnacePass(ClientDesc client)
 	{
-		return mLogic.Pass(car);
+		return mLogic.FurnacePass(client);
 	}
 }

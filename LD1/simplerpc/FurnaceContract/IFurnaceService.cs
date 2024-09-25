@@ -1,6 +1,14 @@
 ﻿namespace Services;
 
 
+public static class GlassProperties
+{
+	public const int MELTING_TEMP = 1674; //Kelvin
+	public const int SPECIFIC_HEAT_CAPACITY = 670; // J*(kg*K)^-1 
+
+	public const int DEFAULT_TEMP = 298; //Kelvin
+}
+
 /// <summary>
 /// Client descriptor.
 /// </summary>
@@ -17,6 +25,8 @@ public class ClientDesc
 	public string ClientNameSurname { get; set; }
 
 	public ClientType ClientType {get; set;}
+
+	public int GeneratedValue {get; set;}
 }
 
 public enum ClientType : int
@@ -88,5 +98,5 @@ public interface IFurnaceService
 	/// </summary>
 	/// <param name="car">Car descriptor.</param>
 	/// <returns>Pass result descriptor.</returns>
-	CycleAttemptResult Pass(ClientDesc client);
+	CycleAttemptResult FurnacePass(ClientDesc client);
 }
