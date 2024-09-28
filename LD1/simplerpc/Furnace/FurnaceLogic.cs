@@ -30,9 +30,14 @@ public class FurnaceState
 	public double GlassTemperature = 0; //kelvin
 
 	/// <summary>
-	/// Car queue.
+	/// Heater queue.
 	/// </summary>
-	public List<int> ClientQueue = new List<int>();
+	public List<int> HeaterQueue = new List<int>();
+
+	/// <summary>
+	/// Loader queue.
+	/// </summary>
+	public List<int> LoaderQueue = new List<int>();
 }
 
 
@@ -102,24 +107,24 @@ class FurnaceLogic
 	{
 		lock( mState.AccessLock )
 		{
-			mLog.Info($"Client {client.ClientId}, Operator {client.ClientNameSurname}, is trying to queue.");
+			mLog.Info($"{client.ClientType} {client.ClientId}, Operator {client.ClientNameSurname}, is trying to queue.");
 
 			//light not red? do not allow to queue
 			if(mState.FurncState != Services.FurnaceState.Pouring )
 			{
-                mLog.Info("Queing denied, because light is not red.");
+                mLog.Info("Queing denied, because furnace is melting.");
 				return false;
 			}
-
+			List<int> queue = client.ClientType == ClientType.Heater ? mState.HeaterQueue : mState.LoaderQueue;
 			//already in queue? deny
-			if( mState.ClientQueue.Exists(it => it == client.ClientId) )
+			if( queue.Exists(it => it == client.ClientId) )
 			{
-				mLog.Info("Queing denied, because car is already in queue.");
+				mLog.Info("Queing denied, because client is already in queue.");
 				return false;
 			}
 
 			//queue
-			mState.ClientQueue.Add(client.ClientId);
+			queue.Add(client.ClientId);
 			mLog.Info("Queuing allowed.");
 
 			//
@@ -132,16 +137,17 @@ class FurnaceLogic
 	/// </summary>
 	/// <param name="clientId">ID of the car to check for.</param>
 	/// <returns>True if car is first in line. False if not first in line or not in queue.</returns>
-	public bool IsFirstInLine(int clientId)
+	public bool IsFirstInLine(int clientId, ClientType clientType)
 	{
 		lock( mState.AccessLock )
 		{
+			List<int> queue = clientType == ClientType.Heater ? mState.HeaterQueue : mState.LoaderQueue;
 			//no queue entries? return false
-			if( mState.ClientQueue.Count == 0 )
+			if( queue.Count == 0 )
 				return false;
 
 			//check if first in line
-			return mState.ClientQueue[0] == clientId;
+			return queue[0] == clientId;
 		}
 	}
 
@@ -157,10 +163,10 @@ class FurnaceLogic
 
 		lock( mState.AccessLock )
 		{
-			//mLog.Info($"Car {client.CarId}, RegNr. {client.CarNumber}, Driver {client.DriverNameSurname}, is trying to pass.");
-
+			mLog.Info($"{client.ClientType} {client.ClientId}, Operator {client.ClientNameSurname}, is trying to do work.");
+			List<int> queue = client.ClientType == ClientType.Heater ? mState.HeaterQueue : mState.LoaderQueue;
 			//light is red? do not allow to pass
-			bool inQueue = mState.ClientQueue.Exists(it => it == client.ClientId);
+			bool inQueue = queue.Exists(it => it == client.ClientId);
 
 			if(mState.FurncState == Services.FurnaceState.Pouring)
 			{
@@ -170,16 +176,16 @@ class FurnaceLogic
 					par.FailReason = "furnace was pouring";
 				else
 				{
-					par.FailReason =  mState.ClientQueue[0] == client.ClientId ? "furnace was pouring" : "not first in line";
+					par.FailReason =  queue[0] == client.ClientId ? "furnace was pouring" : "not first in line";
 					
-                	mState.ClientQueue = mState.ClientQueue.Where(it => it != client.ClientId).ToList();
+                	queue = queue.Where(it => it != client.ClientId).ToList();
 				}
 			}
 			//light is green, allow to pass if not in queue or first in queue
 			else
 			{
 				//car in queue?
-				if(inQueue && mState.ClientQueue[0] != client.ClientId)
+				if(inQueue && queue[0] != client.ClientId)
 				{
 					par.IsSuccess = false;
 					par.FailReason = "not first in line";
@@ -187,7 +193,7 @@ class FurnaceLogic
 				else
 				{
 					if(inQueue)
-						mState.ClientQueue = mState.ClientQueue.Where(it => it != client.ClientId).ToList();
+						queue = queue.Where(it => it != client.ClientId).ToList();
 
 					par.IsSuccess = true;
 
