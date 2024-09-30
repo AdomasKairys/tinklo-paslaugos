@@ -151,7 +151,7 @@ class LoaderClient
 								{
 									//determine state of light and queue
 									furnaceState = furnace.GetFurnaceState();
-									var firstInLine = furnace.IsFirstInLine(client.ClientId);
+									var firstInLine = furnace.IsFirstInLine(client.ClientId, client.ClientType);
 
 									//give some time for light to possibly switch, before taking action
 									Thread.Sleep(rnd.Next(500)); 
@@ -160,7 +160,7 @@ class LoaderClient
 									if( furnaceState == FurnaceState.Melting && firstInLine )
 									{
 										//try passing
-										mLog.Info("Furnace is pouring trying to load glass. ");
+										mLog.Info("Furnace is melting trying to load glass. ");
 										var par = furnace.FurnacePass(client);
 
 										//handle result
@@ -196,7 +196,7 @@ class LoaderClient
 					{
 						mLog.Info("Meditating on my mistakes...");
 						Thread.Sleep(500 + rnd.Next(1500));
-						mLog.Info("It is a new day and a new car.");
+						mLog.Info("It is a new day.");
 					}
 				}				
 			}

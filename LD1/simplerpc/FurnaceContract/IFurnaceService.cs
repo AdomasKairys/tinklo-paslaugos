@@ -1,14 +1,5 @@
 ﻿namespace Services;
 
-
-public static class GlassProperties
-{
-	public const int MELTING_TEMP = 1674; //Kelvin
-	public const int SPECIFIC_HEAT_CAPACITY = 670; // J*(kg*K)^-1 
-
-	public const int DEFAULT_TEMP = 298; //Kelvin
-}
-
 /// <summary>
 /// Client descriptor.
 /// </summary>
@@ -91,7 +82,7 @@ public interface IFurnaceService
 	/// </summary>
 	/// <param name="carId">ID of the car to check for.</param>
 	/// <returns>True if car is first in line. False if not first in line or not in queue.</returns>
-	bool IsFirstInLine(int clientId);
+	bool IsFirstInLine(int clientId, ClientType clientType);
 
 	/// <summary>
 	/// Try passing the traffic light. If car is in queue, it will be removed from it.

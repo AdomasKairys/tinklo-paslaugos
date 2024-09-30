@@ -4,68 +4,48 @@ using NLog;
 
 using Services;
 
+public static class Constants
+{
+	public static class GlassProperties
+	{
+		public const int MELTING_TEMP = 1674; //Kelvin
+		public const int SPECIFIC_HEAT_CAPACITY = 670; // J*(kg*K)^-1 
+		public const int DEFAULT_TEMP = 298; //Kelvin
+	}
+	public static class FurnaceProperties
+	{		
+		public const int FURNACE_CAPACITY = 200; //kg
+	}
+}
 
-/// <summary>
-/// Traffic light state descritor.
-/// </summary>
 public class FurnaceState
 {
-	/// <summary>
-	/// Access lock.
-	/// </summary>
+	
 	public readonly object AccessLock = new object();
 
-	/// <summary>
-	/// Last unique ID value generated.
-	/// </summary>
 	public int LastUniqueId;
 
-	/// <summary>
-	/// Light state.
-	/// </summary>
 	public Services.FurnaceState FurncState;
 
 	public int GlassMass = 0; //kilograms
 
 	public double GlassTemperature = 0; //kelvin
 
-	/// <summary>
-	/// Heater queue.
-	/// </summary>
 	public List<int> HeaterQueue = new List<int>();
 
-	/// <summary>
-	/// Loader queue.
-	/// </summary>
 	public List<int> LoaderQueue = new List<int>();
 }
 
 
-/// <summary>
-/// <para>Traffic light logic.</para>
-/// <para>Thread safe.</para>
-/// </summary>
 class FurnaceLogic
 {
-	/// <summary>
-	/// Logger for this class.
-	/// </summary>
 	private Logger mLog = LogManager.GetCurrentClassLogger();
 
-	/// <summary>
-	/// Background task thread.
-	/// </summary>
 	private Thread mBgTaskThread;
 
-	/// <summary>
-	/// State descriptor.
-	/// </summary>
 	private FurnaceState mState = new FurnaceState();
 	
 
-	/// <summary>
-	/// Constructor.
-	/// </summary>
 	public FurnaceLogic()
 	{
 		//start the background task
@@ -73,10 +53,6 @@ class FurnaceLogic
 		mBgTaskThread.Start();
 	}
 
-	/// <summary>
-	/// Get next unique ID from the server. Is used by cars to acquire client ID's.
-	/// </summary>
-	/// <returns>Unique ID.</returns>
 	public int GetUniqueId() 
 	{
 		lock( mState.AccessLock )
@@ -85,11 +61,7 @@ class FurnaceLogic
 			return mState.LastUniqueId;
 		}
 	}
-
-	/// <summary>
-	/// Get current light state.
-	/// </summary>
-	/// <returns>Current light state.</returns>				
+		
 	public Services.FurnaceState GetFurnaceState() 
 	{
 		lock( mState.AccessLock )
@@ -98,11 +70,6 @@ class FurnaceLogic
 		}
 	}
 
-	/// <summary>
-	/// Queue give car at the light. Will only succeed if light is red.
-	/// </summary>
-	/// <param name="client">Car to queue.</param>
-	/// <returns>True on success, false on failure.</returns>
 	public bool Queue(ClientDesc client)
 	{
 		lock( mState.AccessLock )
@@ -132,11 +99,6 @@ class FurnaceLogic
 		}
 	}
 
-	/// <summary>
-	/// Tell if car is first in line in queue.
-	/// </summary>
-	/// <param name="clientId">ID of the car to check for.</param>
-	/// <returns>True if car is first in line. False if not first in line or not in queue.</returns>
 	public bool IsFirstInLine(int clientId, ClientType clientType)
 	{
 		lock( mState.AccessLock )
@@ -145,17 +107,11 @@ class FurnaceLogic
 			//no queue entries? return false
 			if( queue.Count == 0 )
 				return false;
-
 			//check if first in line
 			return queue[0] == clientId;
 		}
 	}
 
-	/// <summary>
-	/// Try passing the traffic light. If car is in queue, it will be removed from it.
-	/// </summary>
-	/// <param name="client">Car descriptor.</param>
-	/// <returns>Pass result descriptor.</returns>
 	public CycleAttemptResult FurnacePass(ClientDesc client)
 	{
 		//prepare result descriptor
@@ -178,7 +134,7 @@ class FurnaceLogic
 				{
 					par.FailReason =  queue[0] == client.ClientId ? "furnace was pouring" : "not first in line";
 					
-                	queue = queue.Where(it => it != client.ClientId).ToList();
+                	//queue = queue.Where(it => it != client.ClientId).ToList();
 				}
 			}
 			//light is green, allow to pass if not in queue or first in queue
@@ -192,34 +148,45 @@ class FurnaceLogic
 				}
 				else
 				{
-					if(inQueue)
-						queue = queue.Where(it => it != client.ClientId).ToList();
-
 					par.IsSuccess = true;
 
 					if(client.ClientType == ClientType.Loader)
 					{
 						int newMass = client.GeneratedValue + mState.GlassMass;
-						mState.GlassTemperature = (GlassProperties.DEFAULT_TEMP*client.GeneratedValue + mState.GlassTemperature*mState.GlassMass)/newMass;
-						mState.GlassMass = newMass;
+						if(newMass <= Constants.FurnaceProperties.FURNACE_CAPACITY)
+						{
+							mState.GlassTemperature = (Constants.GlassProperties.DEFAULT_TEMP*client.GeneratedValue + mState.GlassTemperature*mState.GlassMass)/newMass;
+							mState.GlassMass = newMass;
+						}
+						else
+						{
+							par.IsSuccess = false;
+							par.FailReason = "furnace is full";
+						}
 					}
 					else if(mState.GlassMass > 0)
 					{
-						mState.GlassTemperature += client.GeneratedValue/(mState.GlassMass*GlassProperties.SPECIFIC_HEAT_CAPACITY);
+						mState.GlassTemperature += client.GeneratedValue/(mState.GlassMass*Constants.GlassProperties.SPECIFIC_HEAT_CAPACITY);
 					}
 					else
 					{
 						par.IsSuccess = false;
 						par.FailReason = "no glass in the furnace";
 					}
-
+					
 				}
 			}
 
 			//log result
 			if( par.IsSuccess )
 			{
-				mLog.Info( $"{client.ClientType} was succesfull.");
+				if(inQueue)
+					queue.Remove(client.ClientId);
+				
+				mLog.Info( $"{client.ClientType} has succesfully " +
+				$"{(client.ClientType == ClientType.Heater ? $"increased the heat by {client.GeneratedValue/(mState.GlassMass*Constants.GlassProperties.SPECIFIC_HEAT_CAPACITY)} " 
+				: $"added {client.GeneratedValue} ")}" +
+				$" {(client.ClientType == ClientType.Heater ? " K" : " kg of glass")}.");
 			}
 			else
 			{
@@ -231,9 +198,6 @@ class FurnaceLogic
 		}
 	}
 
-	/// <summary>
-	/// Background task for the traffic light.
-	/// </summary>
 	public void BackgroundTask()
 	{
 		//intialize random number generator
@@ -248,11 +212,11 @@ class FurnaceLogic
 			//switch the light
 			lock( mState.AccessLock )
 			{
-				mState.FurncState = mState.GlassTemperature >= GlassProperties.MELTING_TEMP ? Services.FurnaceState.Pouring : Services.FurnaceState.Melting;
+				mState.FurncState = mState.GlassTemperature >= Constants.GlassProperties.MELTING_TEMP ? Services.FurnaceState.Pouring : Services.FurnaceState.Melting;
 				if(mState.FurncState == Services.FurnaceState.Pouring){
+					mLog.Info($"Furnace is pouring molten glass, ammount {mState.GlassMass}.");
 					mState.GlassMass = 0;
 					mState.GlassTemperature = 0;
-					mLog.Info($"Furnace is pouring molten glass, ammount {mState.GlassMass}.");
 					int num = 0;
 					while (true)
 					{
