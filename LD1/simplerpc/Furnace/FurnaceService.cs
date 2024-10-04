@@ -18,19 +18,8 @@ public class FurnaceService : IFurnaceService
 		return mLogic.GetFurnaceState();
 	}
 
-
-	public bool Queue(ClientDesc client) 
+	public CycleAttemptResult MeltingGlass(ClientDesc client)
 	{
-		return mLogic.Queue(client);
-	}
-
-	public bool IsFirstInLine(int clientId, ClientType clientType)
-	{
-		return mLogic.IsFirstInLine(clientId, clientType);
-	}
-
-	public CycleAttemptResult FurnacePass(ClientDesc client)
-	{
-		return mLogic.FurnacePass(client);
+		return mLogic.MeltingGlass(client);
 	}
 }

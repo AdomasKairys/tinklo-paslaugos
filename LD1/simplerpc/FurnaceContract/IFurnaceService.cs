@@ -10,11 +10,6 @@ public class ClientDesc
 	/// </summary>
 	public int ClientId { get; set; }
 
-	/// <summary>
-	/// Client name and surname.
-	/// </summary>
-	public string ClientNameSurname { get; set; }
-
 	public ClientType ClientType {get; set;}
 
 	public int GeneratedValue {get; set;}
@@ -71,23 +66,9 @@ public interface IFurnaceService
 	FurnaceState GetFurnaceState();
 
 	/// <summary>
-	/// Queue give car at the light. Will only succeed if light is red.
-	/// </summary>
-	/// <param name="client">client to queue.</param>
-	/// <returns>True on success, false on failure.</returns>
-	bool Queue(ClientDesc client);
-
-	/// <summary>
-	/// Tell if car is first in line in queue.
-	/// </summary>
-	/// <param name="carId">ID of the car to check for.</param>
-	/// <returns>True if car is first in line. False if not first in line or not in queue.</returns>
-	bool IsFirstInLine(int clientId, ClientType clientType);
-
-	/// <summary>
 	/// Try passing the traffic light. If car is in queue, it will be removed from it.
 	/// </summary>
 	/// <param name="car">Car descriptor.</param>
 	/// <returns>Pass result descriptor.</returns>
-	CycleAttemptResult FurnacePass(ClientDesc client);
+	CycleAttemptResult MeltingGlass(ClientDesc client);
 }

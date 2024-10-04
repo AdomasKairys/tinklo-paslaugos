@@ -11,31 +11,9 @@ using NLog;
 using Services;
 
 
-/// <summary>
-/// Client example.
-/// </summary>
 class LoaderClient
 {
-	/// <summary>
-	/// A set of names to choose from.
-	/// </summary>
-	private readonly List<string> NAMES = 
-		new List<string> { 
-			"John", "Peter", "Jack", "Steve"
-		};
 
-	/// <summary>
-	/// A set of surnames to choose from.
-	/// </summary>
-	private readonly List<string> SURNAMES = 
-		new List<String> { 
-			"Johnson", "Peterson", "Jackson", "Steveson" 
-		};
-
-
-	/// <summary>
-	/// Logger for this class.
-	/// </summary>
 	Logger mLog = LogManager.GetCurrentClassLogger();
 
 	/// <summary>
@@ -84,7 +62,7 @@ class LoaderClient
 					.AddSimpleRpcHyperionSerializer();
 
 				sc.AddSimpleRpcProxy<IFurnaceService>("furnaceService"); //must be same as on line 77
-
+				
 				var sp = sc.BuildServiceProvider();
 
 				var furnace = sp.GetService<IFurnaceService>();
@@ -92,12 +70,11 @@ class LoaderClient
 				//initialize client descriptor
 				var client = new ClientDesc(){
 					ClientId = furnace.GetUniqueId(),
-					ClientNameSurname = NAMES[rnd.Next(NAMES.Count)] + 	" " + SURNAMES[rnd.Next(SURNAMES.Count)],
 					GeneratedValue = rnd.Next(1, 5),
 					ClientType = ClientType.Loader };
 
 				//log identity data
-				string s = $"I am a loader {client.ClientId}, Operator {client.ClientNameSurname}, I put {client.GeneratedValue} kg of glass.";
+				string s = $"I am a loader {client.ClientId}, I put {client.GeneratedValue} kg of glass.";
 				mLog.Info(s);
 				Console.Title = s;
 					
@@ -122,7 +99,7 @@ class LoaderClient
 						{
 							//try passing 
 							mLog.Info("Furnace is working, trying to load glass.");							
-							var par = furnace.FurnacePass(client);
+							var par = furnace.MeltingGlass(client);
 
 							//handle result
 							if( par.IsSuccess )
@@ -139,59 +116,37 @@ class LoaderClient
 						//pouring out glass, queue until finished pouring
 						else
 						{
-							mLog.Info("Furnace is pouring, trying to enter queue.");							
-							var inQueue = furnace.Queue(client);
-
-							//success? wait for light and queue
-							if( inQueue )
+							while( !isWaiting && !isHeating )
 							{
-								mLog.Info("I'm in queue now. Waiting for furnace to finish pouring.");
+								furnaceState = furnace.GetFurnaceState();
 
-								while( !isWaiting && !isHeating )
+								Thread.Sleep(rnd.Next(500)); 
+
+								if( furnaceState == FurnaceState.Melting )
 								{
-									//determine state of light and queue
-									furnaceState = furnace.GetFurnaceState();
-									var firstInLine = furnace.IsFirstInLine(client.ClientId, client.ClientType);
+									mLog.Info("Furnace is melting trying to load glass. ");
+									var par = furnace.MeltingGlass(client);
 
-									//give some time for light to possibly switch, before taking action
-									Thread.Sleep(rnd.Next(500)); 
-
-									//can pass? try it
-									if( furnaceState == FurnaceState.Melting && firstInLine )
+									if( par.IsSuccess )
 									{
-										//try passing
-										mLog.Info("Furnace is melting trying to load glass. ");
-										var par = furnace.FurnacePass(client);
-
-										//handle result
-										if( par.IsSuccess )
-										{
-											mLog.Info("Loaded glass, life is good.");		
-											isHeating = true;					
-										}
-										else
-										{
-											mLog.Info($"Failed because '{par.FailReason}'.");
-											isWaiting = true;
-										}
+										mLog.Info("Loaded glass, life is good.");		
+										isHeating = true;					
 									}
-									//no passing yet, wait
 									else
 									{
-										mLog.Info("Waiting some more.");
-										Thread.Sleep(500 + rnd.Next(2500));
+										mLog.Info($"Failed because '{par.FailReason}'.");
+										isWaiting = true;
 									}
 								}
-							}
-							//could not queue (maybe light has changed)
-							else
-							{
-								mLog.Info("Queuing failed. Will check the furnace again.");
+								else
+								{
+									mLog.Info("Waiting some more.");
+									Thread.Sleep(500 + rnd.Next(2500));
+								}
 							}
 						}
 					}
 
-					//managed to crash? reflect on it
 					if( isWaiting )
 					{
 						mLog.Info("Meditating on my mistakes...");
