@@ -29,7 +29,7 @@ public class FurnaceState
 
 	public int GlassMass = 0; //kilograms
 
-	public double GlassTemperature = 0; //kelvin
+	public double FurnaceEnergy = 0; //jules
 
 	//private List<bool> ClientWork = new List<bool>(); //boolean list of clients that interacted with the server, index + 1 = clientId
 }
@@ -90,24 +90,17 @@ class FurnaceLogic
 				{
 					int newMass = client.GeneratedValue + mState.GlassMass;
 					if(newMass <= Constants.FurnaceProperties.FURNACE_CAPACITY)
-					{
-						mState.GlassTemperature = (Constants.GlassProperties.DEFAULT_TEMP*client.GeneratedValue + mState.GlassTemperature*mState.GlassMass)/newMass;
 						mState.GlassMass = newMass;
-					}
+					
 					else
 					{
 						par.IsSuccess = false;
 						par.FailReason = "furnace is full";
 					}
 				}
-				else if(mState.GlassMass > 0)
-				{
-					mState.GlassTemperature += client.GeneratedValue/(mState.GlassMass*Constants.GlassProperties.SPECIFIC_HEAT_CAPACITY);
-				}
 				else
 				{
-					par.IsSuccess = false;
-					par.FailReason = "no glass in the furnace";
+					mState.FurnaceEnergy += client.GeneratedValue;
 				}
 			}
 
@@ -116,11 +109,11 @@ class FurnaceLogic
 			{
 				//mState.ClientWork[client.ClientId-1] = true;
 				mLog.Info( $"{client.ClientType} has succesfully " +
-				$"{(client.ClientType == ClientType.Heater ? $"increased the heat by {client.GeneratedValue/(mState.GlassMass*Constants.GlassProperties.SPECIFIC_HEAT_CAPACITY)} " 
+				$"{(client.ClientType == ClientType.Heater ? $"increased the thermal energy by {client.GeneratedValue} " 
 				: $"added {client.GeneratedValue} ")}" +
-				$" {(client.ClientType == ClientType.Heater ? " K" : " kg of glass")}.");
+				$" {(client.ClientType == ClientType.Heater ? " J" : " kg of glass")}.");
 			}
-			else
+			else 
 			{
 				mLog.Info($"{client.ClientType} has failed because '{par.FailReason}'.");
 			}
@@ -149,15 +142,15 @@ class FurnaceLogic
 			
 			lock( mState.AccessLock )
 			{
-				mState.FurncState = mState.GlassTemperature >= Constants.GlassProperties.MELTING_TEMP ? Services.FurnaceState.Pouring : Services.FurnaceState.Melting;
+				mState.FurncState = (mState.FurnaceEnergy/(Constants.GlassProperties.SPECIFIC_HEAT_CAPACITY*mState.GlassMass))+Constants.GlassProperties.DEFAULT_TEMP >= Constants.GlassProperties.MELTING_TEMP ? Services.FurnaceState.Pouring : Services.FurnaceState.Melting;
 				if(mState.FurncState == Services.FurnaceState.Pouring){
 					mLog.Info($"Furnace is pouring molten glass, ammount {mState.GlassMass}.");
 					mState.GlassMass = 0;
-					mState.GlassTemperature = 0;
+					mState.FurnaceEnergy = 0;
 				}
 				else
 				{
-					mLog.Info($"Furnace is currently melting glass, current glass temperature {mState.GlassTemperature}, ammount of glass in the furnace {mState.GlassMass}");
+					mLog.Info($"Furnace is currently melting glass, current glass temperature {mState.FurnaceEnergy}, ammount of glass in the furnace {mState.GlassMass}");
 				}
 			}
 			if(mState.FurncState == Services.FurnaceState.Pouring)
