@@ -143,7 +143,7 @@ class FurnaceLogic
 			lock( mState.AccessLock )
 			{
 				mState.FurncState = (mState.FurnaceEnergy/(Constants.GlassProperties.SPECIFIC_HEAT_CAPACITY*mState.GlassMass))+Constants.GlassProperties.DEFAULT_TEMP >= Constants.GlassProperties.MELTING_TEMP ? Services.FurnaceState.Pouring : Services.FurnaceState.Melting;
-				if(mState.FurncState == Services.FurnaceState.Pouring){
+				if(mState.FurncState == Services.FurnaceState.Pouring && mState.GlassMass > 0){
 					mLog.Info($"Furnace is pouring molten glass, ammount {mState.GlassMass}.");
 					mState.GlassMass = 0;
 					mState.FurnaceEnergy = 0;
