@@ -10,7 +10,9 @@ using NLog;
 
 using Services;
 
-
+/// <summary>
+/// Loader client class
+/// </summary>
 class LoaderClient
 {
 
@@ -81,19 +83,18 @@ class LoaderClient
 				//loading
 				while( true )
 				{
-					var isWaiting = false;
-					var isHeating = false;
+					var isLoading = false;
 
-					mLog.Info("I prepare to load glass into furnace.");
-
+					client.GeneratedValue = rnd.Next(1,5);
+					mLog.Info($"I prepare to load {client.GeneratedValue} kg of glass into furnace.");
 					//try increasing the heat
-					while( !isWaiting && !isHeating )
+					while( !isLoading )
 					{
 						//read the furnace state
 						var furnaceState = furnace.GetFurnaceState();
 
 						//give some time for furnace to possibly switch, before taking action
-						Thread.Sleep(rnd.Next(500)); 
+						Thread.Sleep(500); 
 
 						if( furnaceState == FurnaceState.Melting )
 						{
@@ -105,53 +106,19 @@ class LoaderClient
 							if( par.IsSuccess )
 							{
 								mLog.Info("Loaded glass, life is good.");		
-								isHeating = true;					
+								isLoading = true;					
 							}
 							else
 							{
 								mLog.Info($"Failed because '{par.FailReason}'.");
-								isWaiting = true;
 							}
 						}
-						//pouring out glass, queue until finished pouring
+						//pouring out glass, wait until winished
 						else
 						{
-							while( !isWaiting && !isHeating )
-							{
-								furnaceState = furnace.GetFurnaceState();
-
-								Thread.Sleep(rnd.Next(500)); 
-
-								if( furnaceState == FurnaceState.Melting )
-								{
-									mLog.Info("Furnace is melting trying to load glass. ");
-									var par = furnace.MeltingGlass(client);
-
-									if( par.IsSuccess )
-									{
-										mLog.Info("Loaded glass, life is good.");		
-										isHeating = true;					
-									}
-									else
-									{
-										mLog.Info($"Failed because '{par.FailReason}'.");
-										isWaiting = true;
-									}
-								}
-								else
-								{
-									mLog.Info("Waiting some more.");
-									Thread.Sleep(500 + rnd.Next(2500));
-								}
-							}
+							mLog.Info($"Furnace is pouring, waiting.");
+							Thread.Sleep(1500);
 						}
-					}
-
-					if( isWaiting )
-					{
-						mLog.Info("Meditating on my mistakes...");
-						Thread.Sleep(500 + rnd.Next(1500));
-						mLog.Info("It is a new day.");
 					}
 				}				
 			}

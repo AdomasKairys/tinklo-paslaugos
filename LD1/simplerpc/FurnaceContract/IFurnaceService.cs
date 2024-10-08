@@ -15,6 +15,9 @@ public class ClientDesc
 	public int GeneratedValue {get; set;}
 }
 
+/// <summary>
+/// Client types
+/// </summary>
 public enum ClientType : int
 {
 	Heater,
