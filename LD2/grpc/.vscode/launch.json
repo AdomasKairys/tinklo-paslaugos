@@ -1,0 +1,30 @@
+{
+   // Use IntelliSense to find out which attributes exist for C# debugging
+   // Use hover for the description of the existing attributes
+   // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+   "version": "0.2.0",
+   "configurations": [
+        {
+            "name": "TrafficLight",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-TrafficLight",
+            "program": "${workspaceFolder}/TrafficLight/bin/Debug/net8.0/TrafficLight.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/TrafficLight",
+            "console": "externalTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Car",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-Car",
+            "program": "${workspaceFolder}/Car/bin/Debug/net8.0/Car.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Car",
+            "console": "externalTerminal",
+            "stopAtEntry": false
+        }
+    ]
+}

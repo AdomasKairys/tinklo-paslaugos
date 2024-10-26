@@ -1,0 +1,52 @@
+//set the language version
+syntax = "proto3";
+
+//this will translate into C# namespace
+package Services;
+
+//enumeration
+enum LightState {
+	Red = 0;
+	Green = 1;
+}
+
+//this will translate into service and service client stubs
+service TrafficLight {    
+	//these will translate into a service operations
+	rpc GetUniqueId(Empty) returns (IntMsg);
+	rpc GetLightState(Empty) returns (GetLightStateOutput);
+	rpc Queue(CarDesc) returns (BoolMsg);
+	rpc IsFirstInLine(IntMsg) returns (BoolMsg);
+	rpc Pass(CarDesc) returns (PassAttemptResult);
+}
+
+//this is used for calls that do accept inputs or produce outputs
+message Empty {    
+}
+
+//single value structures
+message IntMsg {
+	int32 value = 1;
+}
+
+message BoolMsg {
+	bool value = 1;
+}
+
+//light state output
+message GetLightStateOutput {
+	LightState value = 1;
+}
+
+//car descriptor
+message CarDesc {
+	int32 CarId = 1;
+	string CarNumber = 2;
+	string DriverNameSurname = 3;
+}
+
+//passing attempt result descriptor
+message PassAttemptResult {
+	bool IsSuccess = 1;
+	string CrashReason = 2;
+}
