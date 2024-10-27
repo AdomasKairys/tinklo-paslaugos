@@ -1,12 +1,7 @@
 ﻿namespace Clients;
 
-using Microsoft.Extensions.DependencyInjection;
-
-using SimpleRpc.Serialization.Hyperion;
-using SimpleRpc.Transports;
-using SimpleRpc.Transports.Http.Client;
-
 using NLog;
+using Grpc.Net.Client;
 
 using Services;
 

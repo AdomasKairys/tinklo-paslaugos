@@ -4,13 +4,10 @@ using System.Net;
 
 using NLog;
 
-using SimpleRpc.Transports;
-using SimpleRpc.Transports.Http.Server;
-using SimpleRpc.Serialization.Hyperion;
 
-using Services;
-
-
+/// <summary>
+/// Application entry point.
+/// </summary>
 public class Server
 {
 	/// <summary>
@@ -68,7 +65,7 @@ public class Server
 	/// <param name="args">Command line arguments.</param>
 	private void StartServer(string[] args)
 	{
-		///create web app builder
+		//create web app builder
 		var builder = WebApplication.CreateBuilder(args);
 
 		//configure integrated server
@@ -76,22 +73,21 @@ public class Server
 			opts.Listen(IPAddress.Loopback, 5000);
 		});
 
-		//add SimpleRPC services
-		builder.Services
-			.AddSimpleRpcServer(new HttpServerTransportOptions { Path = "/simplerpc" })
-			.AddSimpleRpcHyperionSerializer();
+		//add support for GRPC services
+		builder.Services.AddGrpc();
 
-		//add our custom services
-		builder.Services
-			// .AddScoped<ITrafficLightService, TrafficLightService>();  //instance-per-request, AddTransient would result in the same
-			.AddSingleton<IFurnaceService>(new FurnaceService());   //singleton
+		//add the actual services
+		builder.Services.AddSingleton(new TrafficLightService());	
 
 		//build the server
 		var app = builder.Build();
 
-		//add SimpleRPC middleware
-		app.UseSimpleRpcServer();
+		//turn on request routing
+		app.UseRouting();
 
+		//configure routes
+		app.MapGrpcService<TrafficLightService>();
+		
 		//run the server
 		app.Run();
 		// app.RunAsync(); //use this if you need to implement background processing in the main thread

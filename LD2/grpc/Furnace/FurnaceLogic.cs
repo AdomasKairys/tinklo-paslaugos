@@ -5,6 +5,56 @@ using NLog;
 using Services;
 
 /// <summary>
+/// Client descriptor.
+/// </summary>
+public class ClientDesc
+{
+	/// <summary>
+	/// Client ID.
+	/// </summary>
+	public int ClientId { get; set; }
+
+	public ClientType ClientType {get; set;}
+
+	public int GeneratedValue {get; set;}
+}
+
+/// <summary>
+/// Client types
+/// </summary>
+public enum ClientType : int
+{
+	Heater,
+	Loader
+}
+
+/// <summary>
+/// Descriptor of loading and heating cycle atempt result
+/// </summary>
+public class CycleAttemptResult
+{
+	/// <summary>
+	/// Indicates if loading/heating attempt has succeeded.
+	/// </summary>
+	public bool IsSuccess { get; set; }
+
+	/// <summary>
+	/// If loading/heating attempt has failed, indicates reason.
+	/// </summary>
+	public string FailReason { get; set; }
+}
+
+
+/// <summary>
+/// Furnace state.
+/// </summary>
+public enum FurnaceState : int
+{
+	Melting,
+	Pouring
+}
+
+/// <summary>
 /// Cunstants for glass and furnace
 /// </summary>
 public static class Constants
