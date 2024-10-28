@@ -5,12 +5,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NLog" Version="5.3.3"/>
-		<PackageReference Include="SimpleRpc" Version="1.0.0-beta1"/>
-		<PackageReference Include="SimpleRpc.Serialization.Hyperion" Version="1.0.0-beta1"/>
+		<Protobuf Include="Protos\service.proto" GrpcServices="server"/>
 	</ItemGroup>
-
+	
 	<ItemGroup>
-		<ProjectReference Include="..\FurnaceContract\FurnaceContract.csproj"/>
+		<PackageReference Include="Grpc.AspNetCore" Version="2.66.0"/>
+		<PackageReference Include="NLog" Version="5.3.4"/>
 	</ItemGroup>
 </Project>

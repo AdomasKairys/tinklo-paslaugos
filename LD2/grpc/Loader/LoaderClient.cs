@@ -45,28 +45,14 @@ class LoaderClient
 		while( true )
 		{
 			try {
-				//connect to the server, get service client proxy
-				var sc = new ServiceCollection();
-				sc
-					.AddSimpleRpcClient(
-						"furnaceService", //must be same as on line 86
-						new HttpClientTransportOptions
-						{
-							Url = "http://127.0.0.1:5000/simplerpc",
-							Serializer = "HyperionMessageSerializer"
-						}
-					)
-					.AddSimpleRpcHyperionSerializer();
+				//connect to the server, get service proxy
+				var channel = GrpcChannel.ForAddress("http://127.0.0.1:5000");
 
-				sc.AddSimpleRpcProxy<IFurnaceService>("furnaceService"); //must be same as on line 77
-				
-				var sp = sc.BuildServiceProvider();
-
-				var furnace = sp.GetService<IFurnaceService>();
+				var furnace = new Furnace.FurnaceClient(channel);
 
 				//initialize client descriptor
 				var client = new ClientDesc(){
-					ClientId = furnace.GetUniqueId(),
+					ClientId = furnace.GetUniqueId(new Empty()).Value,
 					GeneratedValue = rnd.Next(1, 5),
 					ClientType = ClientType.Loader };
 
@@ -86,7 +72,7 @@ class LoaderClient
 					while( !isLoading )
 					{
 						//read the furnace state
-						var furnaceState = furnace.GetFurnaceState();
+						var furnaceState = furnace.GetFurnaceState(new Empty()).Value;
 
 						//give some time for furnace to possibly switch, before taking action
 						Thread.Sleep(500); 
@@ -95,7 +81,7 @@ class LoaderClient
 						{
 							//try passing 
 							mLog.Info("Furnace is working, trying to load glass.");							
-							var par = furnace.MeltingGlass(client);
+							var par = furnace.MeltGlass(client);
 
 							//handle result
 							if( par.IsSuccess )

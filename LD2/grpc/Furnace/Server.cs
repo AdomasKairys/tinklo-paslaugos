@@ -77,7 +77,7 @@ public class Server
 		builder.Services.AddGrpc();
 
 		//add the actual services
-		builder.Services.AddSingleton(new TrafficLightService());	
+		builder.Services.AddSingleton(new FurnaceService());	
 
 		//build the server
 		var app = builder.Build();
@@ -86,7 +86,7 @@ public class Server
 		app.UseRouting();
 
 		//configure routes
-		app.MapGrpcService<TrafficLightService>();
+		app.MapGrpcService<FurnaceService>();
 		
 		//run the server
 		app.Run();
