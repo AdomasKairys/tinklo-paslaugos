@@ -21,17 +21,17 @@ class FurnaceClient : IFurnaceService
 	/// <summary>
 	/// Name of the message exchange.
 	/// </summary>
-	private static readonly String ExchangeName = "T120B180.TrafficLight.Exchange";
+	private static readonly String ExchangeName = "T120B180.Furnace.Exchange";
 
 	/// <summary>
 	/// Name of the server queue.
 	/// </summary>
-	private static readonly String ServerQueueName = "T120B180.TrafficLight.TrafficLightService";
+	private static readonly String ServerQueueName = "T120B180.Furnace.FurnaceService";
 
 	/// <summary>
 	/// Prefix for the name of the client queue.
 	/// </summary>
-	private static readonly String ClientQueueNamePrefix = "T120B180.TrafficLight.TrafficLightClient_";
+	private static readonly String ClientQueueNamePrefix = "T120B180.Furnace.FurnaceClient";
 
 
 	/// <summary>

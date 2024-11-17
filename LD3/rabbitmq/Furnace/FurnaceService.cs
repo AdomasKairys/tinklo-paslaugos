@@ -16,12 +16,12 @@ public class FurnaceService
 	/// <summary>
 	/// Name of the request exchange.
 	/// </summary>
-	private static readonly String ExchangeName = "T120B180.TrafficLight.Exchange";
+	private static readonly String ExchangeName = "T120B180.Furnace.Exchange";
 
 	/// <summary>
 	/// Name of the request queue.
 	/// </summary>
-	private static readonly String ServerQueueName = "T120B180.TrafficLight.TrafficLightService";
+	private static readonly String ServerQueueName = "T120B180.Furnace.FurnaceService";
 
 
 	/// <summary>
