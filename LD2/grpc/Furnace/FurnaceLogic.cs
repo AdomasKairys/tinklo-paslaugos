@@ -2,7 +2,6 @@ namespace Servers;
 
 using NLog;
 
-using Services;
 
 /// <summary>
 /// Client descriptor.
@@ -79,14 +78,14 @@ public static class Constants
 /// <summary>
 /// Furnace variables
 /// </summary>
-public class FurnaceState
+public class FurnaceDescriptor
 {
 	
 	public readonly object AccessLock = new object();
 
 	public int LastUniqueId;
 
-	public Services.FurnaceState FurncState;
+	public FurnaceState FurncState;
 
 	public int GlassMass = 0; //kilograms
 
@@ -103,7 +102,7 @@ class FurnaceLogic
 
 	private Thread mBgTaskThread;
 
-	private FurnaceState mState = new FurnaceState();
+	private FurnaceDescriptor mState = new FurnaceDescriptor();
 	
 	public FurnaceLogic()
 	{
@@ -127,7 +126,7 @@ class FurnaceLogic
 	/// Gets furnace state
 	/// </summary>
 	/// <returns>furnace state</returns>
-	public Services.FurnaceState GetFurnaceState() 
+	public FurnaceState GetFurnaceState() 
 	{
 		lock( mState.AccessLock )
 		{
@@ -139,7 +138,7 @@ class FurnaceLogic
 	/// </summary>
 	/// <param name="client">client data</param>
 	/// <returns>result success or fail</returns>
-	public CycleAttemptResult MeltingGlass(ClientDesc client)
+	public CycleAttemptResult MeltGlass(ClientDesc client)
 	{
 		//prepare result descriptor
 		var par = new CycleAttemptResult();
@@ -148,7 +147,7 @@ class FurnaceLogic
 		{
 			mLog.Info($"{client.ClientType} {client.ClientId}, is trying to do work.");
 
-			if(mState.FurncState == Services.FurnaceState.Pouring)
+			if(mState.FurncState == FurnaceState.Pouring)
 			{
 				par.IsSuccess = false;
 				par.FailReason = "furnace is pouring";
@@ -223,7 +222,7 @@ class FurnaceLogic
 				else
 					cycleCounter = 0;
 				if(cycleCounter == 3){ //after 3 melting cycles, pour
-					mState.FurncState = Services.FurnaceState.Pouring;
+					mState.FurncState = FurnaceState.Pouring;
 					mLog.Info($"Furnace is pouring molten glass, ammount {mState.GlassMass}.");
 					mState.GlassMass = 0;
 					mState.GlassTemperature = 0;
@@ -234,7 +233,7 @@ class FurnaceLogic
 					mLog.Info($"Furnace is currently melting glass, current glass temperature {mState.GlassTemperature}, ammount of glass in the furnace {mState.GlassMass}");
 				}
 			}
-			if(mState.FurncState == Services.FurnaceState.Pouring)
+			if(mState.FurncState == FurnaceState.Pouring)
 			{
 				int num = 0;
 				while (true)
@@ -251,7 +250,7 @@ class FurnaceLogic
 			}
 			lock(mState.AccessLock)
 			{
-				mState.FurncState = Services.FurnaceState.Melting;
+				mState.FurncState = FurnaceState.Melting;
 			}
 		}
 	}

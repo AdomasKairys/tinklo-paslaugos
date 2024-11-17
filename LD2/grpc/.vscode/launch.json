@@ -4,27 +4,38 @@
    // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
    "version": "0.2.0",
    "configurations": [
-        {
-            "name": "TrafficLight",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build-TrafficLight",
-            "program": "${workspaceFolder}/TrafficLight/bin/Debug/net8.0/TrafficLight.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/TrafficLight",
-            "console": "externalTerminal",
-            "stopAtEntry": false
-        },
-        {
-            "name": "Car",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build-Car",
-            "program": "${workspaceFolder}/Car/bin/Debug/net8.0/Car.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/Car",
-            "console": "externalTerminal",
-            "stopAtEntry": false
-        }
+    {
+        "name": "Furnace",
+        "type": "coreclr",
+        "request": "launch",           
+        "preLaunchTask": "build-Furnace",
+        "program": "${workspaceFolder}/Furnace/bin/Debug/net8.0/Furnace.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/Furnace",
+        "console": "externalTerminal",
+        "stopAtEntry": false
+    },
+    {
+        "name": "Heater",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build-Heater",
+        "program": "${workspaceFolder}/Heater/bin/Debug/net8.0/Heater.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/Heater",
+        "console": "externalTerminal",
+        "stopAtEntry": false
+    },
+    {
+        "name": "Loader",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build-Loader",
+        "program": "${workspaceFolder}/Loader/bin/Debug/net8.0/Loader.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/Loader",
+        "console": "externalTerminal",
+        "stopAtEntry": false
+    }  
     ]
 }

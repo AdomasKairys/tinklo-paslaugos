@@ -5,19 +5,21 @@ syntax = "proto3";
 package Services;
 
 //enumeration
-enum LightState {
-	Red = 0;
-	Green = 1;
+enum FurnaceState {
+	Melting = 0;
+	Pouring = 1;
+}
+enum ClientType {
+	Heater = 0;
+	Loader = 1;
 }
 
 //this will translate into service and service client stubs
-service TrafficLight {    
+service Furnace {    
 	//these will translate into a service operations
 	rpc GetUniqueId(Empty) returns (IntMsg);
-	rpc GetLightState(Empty) returns (GetLightStateOutput);
-	rpc Queue(CarDesc) returns (BoolMsg);
-	rpc IsFirstInLine(IntMsg) returns (BoolMsg);
-	rpc Pass(CarDesc) returns (PassAttemptResult);
+	rpc GetFurnaceState(Empty) returns (GetFurnaceStateOutput);
+	rpc MeltGlass(ClientDesc) returns (CycleAttemptResult);
 }
 
 //this is used for calls that do accept inputs or produce outputs
@@ -34,19 +36,19 @@ message BoolMsg {
 }
 
 //light state output
-message GetLightStateOutput {
-	LightState value = 1;
+message GetFurnaceStateOutput {
+	FurnaceState value = 1;
 }
 
 //car descriptor
-message CarDesc {
-	int32 CarId = 1;
-	string CarNumber = 2;
-	string DriverNameSurname = 3;
+message ClientDesc {
+	int32 ClientId = 1;
+	ClientType ClientType = 2;
+	int32 GeneratedValue = 3;
 }
 
 //passing attempt result descriptor
-message PassAttemptResult {
+message CycleAttemptResult {
 	bool IsSuccess = 1;
-	string CrashReason = 2;
+	string FailReason = 2;
 }
