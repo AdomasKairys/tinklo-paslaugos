@@ -210,9 +210,9 @@ class FurnaceClient : IFurnaceService
 	}
 
 	/// <summary>
-	/// Get current light state.
+	/// Get current furnace state.
 	/// </summary>
-	/// <returns>Current light state.</returns>				
+	/// <returns>Current furnace state.</returns>				
 	public FurnaceState GetFurnaceState() 
 	{
 		var result =
@@ -225,16 +225,16 @@ class FurnaceClient : IFurnaceService
 	}
 
 	/// <summary>
-	/// Try passing the traffic light. If car is in queue, it will be removed from it.
+	/// Try melting the glass
 	/// </summary>
-	/// <param name="car">Car descriptor.</param>
-	/// <returns>Pass result descriptor.</returns>
-	public CycleAttemptResult MeltGlass(ClientDesc car)
+	/// <param name="client">Client descriptor.</param>
+	/// <returns>Cycle attempt descriptor.</returns>
+	public CycleAttemptResult MeltGlass(ClientDesc client)
 	{
 		var result =
 			Call(
 				nameof(MeltGlass),
-				() => JsonConvert.SerializeObject(car),
+				() => JsonConvert.SerializeObject(client),
 				(data) => JsonConvert.DeserializeObject<CycleAttemptResult>(data)
 			);
 		return result;
