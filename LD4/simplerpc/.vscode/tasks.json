@@ -2,12 +2,24 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build-Furnace",
+            "label": "build-Furnace-gRPC",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Furnace/Furnace.csproj",
+                "${workspaceFolder}/Furnace-gRPC/Furnace.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build-Adapter-gRPC",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Adapter-gRPC/Adapter-gRPC.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
