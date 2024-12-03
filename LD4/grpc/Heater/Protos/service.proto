@@ -1,0 +1,54 @@
+//set the language version
+syntax = "proto3";
+
+//this will translate into C# namespace
+package Services;
+
+//enumeration
+enum FurnaceState {
+	Melting = 0;
+	Pouring = 1;
+}
+enum ClientType {
+	Heater = 0;
+	Loader = 1;
+}
+
+//this will translate into service and service client stubs
+service Furnace {    
+	//these will translate into a service operations
+	rpc GetUniqueId(Empty) returns (IntMsg);
+	rpc GetFurnaceState(Empty) returns (GetFurnaceStateOutput);
+	rpc MeltGlass(ClientDesc) returns (CycleAttemptResult);
+}
+
+//this is used for calls that do accept inputs or produce outputs
+message Empty {    
+}
+
+//single value structures
+message IntMsg {
+	int32 value = 1;
+}
+
+message BoolMsg {
+	bool value = 1;
+}
+
+//light state output
+message GetFurnaceStateOutput {
+	FurnaceState value = 1;
+}
+
+//car descriptor
+message ClientDesc {
+	int32 ClientId = 1;
+	ClientType ClientType = 2;
+	int32 GeneratedValue = 3;
+}
+
+//passing attempt result descriptor
+message CycleAttemptResult {
+	bool IsSuccess = 1;
+	string FailReason = 2;
+}
