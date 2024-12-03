@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NSwag.AspNetCore" Version="14.1.0" />
+		<PackageReference Include="NSwag.MSBuild" Version="14.1.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="NLog" Version="5.3.3" />
+	</ItemGroup>
+
+	<!-- This will only work if server is running. It needs access to http://localhost:5000/swagger/v1/swagger.json . -->
+	<Target Name="NSwag" BeforeTargets="BeforeBuild">
+		<Exec Command="$(NSwagExe_Net80) run nswag.json /variables:Configuration=$(Configuration),OutDir=$(OutDir)" IgnoreExitCode="true" />
+		<!-- See 'https://stackoverflow.com/questions/44818730/is-there-a-net-core-cli-pre-before-build-task' as to why the following is necessary-->
+		<ItemGroup>
+	  		<Compile Include="**/*$(DefaultLanguageSourceExtension)" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(BaseIntermediateOutputPath)**;$(BaseOutputPath)**;@(Compile)" />
+		</ItemGroup>
+	</Target>
+</Project>
