@@ -17,7 +17,7 @@
             "type": "coreclr",
             "request": "launch",           
             "preLaunchTask": "build-Adapter-gRPC",
-            "program": "${workspaceFolder}/Adapter-gRPC/bin/Debug/net8.0/Adapter-gRPC.dll",
+            "program": "${workspaceFolder}/Adapter-gRPC/bin/Debug/net8.0/Adapter.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Adapter-gRPC",
             "console": "externalTerminal",

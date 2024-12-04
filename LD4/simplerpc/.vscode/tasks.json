@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Adapter-gRPC/Adapter-gRPC.csproj",
+                "${workspaceFolder}/Adapter-gRPC/Adapter.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
