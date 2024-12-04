@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Adapter-gRPC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2acbc4770b7b9b9a4de3170685038ef1cd154dd5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a1b62b6ac72db0594a12b16160e78ab402b75b12")]
 [assembly: System.Reflection.AssemblyProductAttribute("Adapter-gRPC")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Adapter-gRPC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

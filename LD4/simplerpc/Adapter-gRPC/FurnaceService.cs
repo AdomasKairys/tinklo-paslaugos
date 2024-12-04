@@ -1,26 +1,40 @@
+extern alias simplerpc;
+
 namespace Servers;
 
 using Grpc.Net.Client;
+using NLog;
 
 using Services;
-using ServicesGRPC;
+using SimpleRpc = simplerpc::Services;
 
 /// <summary>
-/// Furnace contract
+/// Simple RPC Furnace contract
 /// </summary>
-public class FurnaceService : IFurnaceService
+public class FurnaceServiceAdapter : SimpleRpc.IFurnaceService
 {
 	//NOTE: instance-per-request service would need logic to be static or injected from a singleton instance
 	private readonly Furnace.FurnaceClient? furnace;
+    private readonly Logger mLog = LogManager.GetCurrentClassLogger();
 
-	public FurnaceService(){
-		try{
-			GrpcChannel channel = GrpcChannel.ForAddress("http://127.0.0.1:5000");
-			furnace = new Furnace.FurnaceClient(channel);
+	/// <summary>
+	/// Constructor for simple rpc furnace service adapter, connects to gRPC server 
+	/// </summary>
+	public FurnaceServiceAdapter(){
+		while(true){
+			try{
+				mLog.Info("Connecting to gRPC server");
+				GrpcChannel channel = GrpcChannel.ForAddress("http://127.0.0.1:5000");
+				furnace = new Furnace.FurnaceClient(channel);
+				furnace.GetFurnaceState(new Empty()); // arbitrary call to check connection
+				break;
+			}
+			catch(Exception e){
+				mLog.Warn(e, "Failed to connect to gRPC server, retrying");
+				Thread.Sleep(2000);
+			}
 		}
-		catch(Exception){
-			//TODO: handle exeptions
-		}
+		mLog.Info("Connected succesfully");
 	}
 
 	/// <summary>
@@ -29,50 +43,31 @@ public class FurnaceService : IFurnaceService
 	/// <returns>unique client id</returns>
 	public int GetUniqueId()
 	{
-		if(furnace == null)
-			throw new Exception();
-		
-		return furnace.GetUniqueId(new Empty()).Value;
+		return furnace!.GetUniqueId(new Empty()).Value;
 	}
 	/// <summary>
 	/// Gets current furnace state
 	/// </summary>
 	/// <returns>Furnace state</returns>
-	public Services.FurnaceState GetFurnaceState()
+	public SimpleRpc.FurnaceState GetFurnaceState()
 	{
-		if(furnace == null)
-			throw new Exception();
-
-		return (Services.FurnaceState)furnace.GetFurnaceState(new Empty()).Value;
+		return (SimpleRpc.FurnaceState)furnace!.GetFurnaceState(new Empty()).Value;
 	}
 	/// <summary>
 	/// Main function that melts glass (increase heat or load glass)
 	/// </summary>
 	/// <param name="client">client information (heater or loader)</param>
 	/// <returns>Result of success or failure</returns>
-	public Services.CycleAttemptResult MeltingGlass(Services.ClientDesc client)
+	public SimpleRpc.CycleAttemptResult MeltingGlass(SimpleRpc.ClientDesc client)
 	{
-		if(furnace == null)
-			throw new Exception();
-		ServicesGRPC.ClientDesc clientDesc = new ServicesGRPC.ClientDesc() {
+		ClientDesc clientDesc = new ClientDesc() {
 			ClientId = client.ClientId,
-			ClientType = (ServicesGRPC.ClientType) client.ClientType, 
+			ClientType = (ClientType) client.ClientType, 
 			GeneratedValue= client.GeneratedValue};
-		ServicesGRPC.CycleAttemptResult cycleAttemptResultGRPC = furnace.MeltGlass(clientDesc);
-		Services.CycleAttemptResult cycleAttemptResultSRPC = new Services.CycleAttemptResult() {
+		CycleAttemptResult cycleAttemptResultGRPC = furnace!.MeltGlass(clientDesc);
+		SimpleRpc.CycleAttemptResult cycleAttemptResultSRPC = new SimpleRpc.CycleAttemptResult() {
 			IsSuccess = cycleAttemptResultGRPC.IsSuccess,
 		 	FailReason = cycleAttemptResultGRPC.FailReason};
-
 		return  cycleAttemptResultSRPC;
 	}
-
-    FurnaceState IFurnaceService.GetFurnaceState()
-    {
-        throw new NotImplementedException();
-    }
-
-    public CycleAttemptResult MeltingGlass(ClientDesc client)
-    {
-        throw new NotImplementedException();
-    }
 }

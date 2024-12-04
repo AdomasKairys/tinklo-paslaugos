@@ -16,7 +16,7 @@
 		<PackageReference Include="Grpc.Net.Client" Version="2.66.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\FurnaceContract\FurnaceContract.csproj" />
+	  <ProjectReference Include="..\FurnaceContract\FurnaceContract.csproj" Aliases="simplerpc"/>
 	</ItemGroup>
 
 </Project>

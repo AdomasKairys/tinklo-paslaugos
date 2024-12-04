@@ -1,3 +1,4 @@
+extern alias simplerpc;
 namespace Servers;
 
 using System.Net;
@@ -8,7 +9,7 @@ using SimpleRpc.Transports;
 using SimpleRpc.Transports.Http.Server;
 using SimpleRpc.Serialization.Hyperion;
 
-using Services;
+using SimpleRpc = simplerpc::Services;
 
 
 public class Server
@@ -84,7 +85,7 @@ public class Server
 		//add our custom services
 		builder.Services
 			// .AddScoped<ITrafficLightService, TrafficLightService>();  //instance-per-request, AddTransient would result in the same
-			.AddSingleton<IFurnaceService>(new FurnaceService());   //singleton
+			.AddSingleton<SimpleRpc.IFurnaceService>(new FurnaceServiceAdapter());   //singleton
 
 		//build the server
 		var app = builder.Build();
