@@ -1,5 +1,3 @@
-extern alias simplerpc;
-
 namespace Servers;
 
 using Grpc.Core;
@@ -7,17 +5,14 @@ using System.Net.Http;
 using NLog;
 
 using Services;
-using SimpleRpc = simplerpc::Services;
-
+using ServicesRest;
 
 
 /// <summary>
 /// Simple RPC Furnace contract
 /// </summary>
-public class FurnaceServiceAdapter : Services.Furnace.FurnaceBase
+public class FurnaceServiceAdapter : Furnace.FurnaceBase
 {
-	//NOTE: instance-per-request service would need logic to be static or injected from a singleton instance
-	private readonly FurnaceLogic mLogic = new FurnaceLogic();
 	
 	private readonly FurnaceClient? furnace;
     private readonly Logger mLog = LogManager.GetCurrentClassLogger();
@@ -28,13 +23,13 @@ public class FurnaceServiceAdapter : Services.Furnace.FurnaceBase
 	public FurnaceServiceAdapter(){
 		while(true){
 			try{
-				mLog.Info("Connecting to gRPC server");
+				mLog.Info("Connecting to rest server");
 				furnace = new FurnaceClient("http://127.0.0.1:5000", new HttpClient());
-				furnace.GetFurnaceState(); // arbitrary call to check connection
+				furnace!.GetFurnaceState(); // arbitrary call to check connection
 				break;
 			}
 			catch(Exception e){
-				mLog.Warn(e, "Failed to connect to gRPC server, retrying");
+				mLog.Warn(e, "Failed to connect to rest server, retrying");
 				Thread.Sleep(2000);
 			}
 		}
@@ -61,7 +56,7 @@ public class FurnaceServiceAdapter : Services.Furnace.FurnaceBase
 	public override Task<GetFurnaceStateOutput> GetFurnaceState(Empty input, ServerCallContext context)
 	{
 		var logicFurnaceState = furnace!.GetFurnaceState();
-		var serviceFurnaceState = (Services.FurnaceState)logicFurnaceState; //this will only work properly if enumerations are by-value compatible
+		var serviceFurnaceState = (FurnaceState)logicFurnaceState; //this will only work properly if enumerations are by-value compatible
 
 		var result = new GetFurnaceStateOutput { Value = serviceFurnaceState };
 		return Task.FromResult(result);
@@ -77,9 +72,9 @@ public class FurnaceServiceAdapter : Services.Furnace.FurnaceBase
 	{
 		//convert input to the format expected by logic
 		var client = 
-			new ClientDesc { 
+			new ServicesRest.ClientDesc { 
 				ClientId = input.ClientId,
-				ClientType = (ClientType)input.ClientType,
+				ClientType = (ServicesRest.ClientType)input.ClientType,
 				GeneratedValue = input.GeneratedValue
 			};
 

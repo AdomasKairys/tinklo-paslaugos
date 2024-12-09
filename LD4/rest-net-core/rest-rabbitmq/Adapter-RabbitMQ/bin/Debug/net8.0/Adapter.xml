@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Adapter</name>
+    </assembly>
+    <members>
+        <member name="T:Servers.FurnaceController">
+            <summary>
+            Furnace contract
+            </summary>
+        </member>
+        <member name="F:Servers.FurnaceController.mLogic">
+            <summary>
+            Service logic. This is created in Server.StartServer() and received through DI in constructor.
+            </summary>
+        </member>
+        <member name="M:Servers.FurnaceController.#ctor(Servers.FurnaceServiceAdapterLogic)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logic">Logic to use. This will get passed through DI.</param>
+        </member>
+        <member name="M:Servers.FurnaceController.GetUniqueId">
+            <summary>
+            Gets unique id for client
+            </summary>
+            <returns>unique client id</returns>
+        </member>
+        <member name="M:Servers.FurnaceController.GetFurnaceState">
+            <summary>
+            Gets current furnace state
+            </summary>
+            <returns>Furnace state</returns>
+        </member>
+        <member name="M:Servers.FurnaceController.MeltGlass(Services.ClientDesc)">
+            <summary>
+            Main function that melts glass (increase heat or load glass)
+            </summary>
+            <param name="client">client information (heater or loader)</param>
+            <returns>Result of success or failure</returns>
+        </member>
+        <member name="T:Servers.State">
+            <summary>
+            Furnace state.
+            </summary>
+        </member>
+        <member name="T:Servers.FurnaceServiceAdapterLogic">
+            <summary>
+            Simple RPC Furnace contract
+            </summary>
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapterLogic.#ctor">
+            <summary>
+            Constructor for simple rpc furnace service adapter, connects to gRPC server 
+            </summary>
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapterLogic.GetUniqueId">
+            <summary>
+            Get next unique ID from the server. Is used by cars to acquire client ID's.
+            </summary>
+            <param name="input">Not used.</param>
+            <param name="context">Call context.</param>
+            <returns>Unique ID.</returns>
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapterLogic.GetFurnaceState">
+            <summary>
+            Get current light state.
+            </summary>
+            <param name="input">Not used.</param>
+            <param name="context">Call context.</param>
+            <returns>Current light state.</returns>				
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapterLogic.MeltGlass(Services.ClientDesc)">
+            <summary>
+            Try melting glass
+            </summary>
+            <param name="input">Client descriptor.</param>
+            <param name="context">Call context.</param>
+            <returns>Attemp result descriptor.</returns>
+        </member>
+        <member name="F:Servers.Server.log">
+            <summary>
+            Logger for this class.
+            </summary>
+        </member>
+        <member name="M:Servers.Server.ConfigureLogging">
+            <summary>
+            Configure loggin subsystem.
+            </summary>
+        </member>
+        <member name="M:Servers.Server.Main(System.String[])">
+            <summary>
+            Program entry point.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
+        <member name="M:Servers.Server.Run(System.String[])">
+            <summary>
+            Program body.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
+        <member name="M:Servers.Server.StartServer(System.String[])">
+            <summary>
+            Starts integrated server.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
+        <member name="T:Clients.FurnaceClient">
+            <summary>
+            <para>RPC style wrapper for the service.</para>
+            <para>Static members are thread safe, instance members are not.</para>
+            </summary>
+        </member>
+        <member name="F:Clients.FurnaceClient.ExchangeName">
+            <summary>
+            Name of the message exchange.
+            </summary>
+        </member>
+        <member name="F:Clients.FurnaceClient.ServerQueueName">
+            <summary>
+            Name of the server queue.
+            </summary>
+        </member>
+        <member name="F:Clients.FurnaceClient.ClientQueueNamePrefix">
+            <summary>
+            Prefix for the name of the client queue.
+            </summary>
+        </member>
+        <member name="F:Clients.FurnaceClient.log">
+            <summary>
+            Logger for this class.
+            </summary>
+        </member>
+        <member name="P:Clients.FurnaceClient.ClientId">
+            <summary>
+            Service client ID.
+            </summary>
+        </member>
+        <member name="P:Clients.FurnaceClient.ClientQueueName">
+            <summary>
+            Name of the client queue.
+            </summary>
+        </member>
+        <member name="F:Clients.FurnaceClient.rmqConn">
+            <summary>
+            Connection to RabbitMQ message broker.
+            </summary>
+        </member>
+        <member name="F:Clients.FurnaceClient.rmqChann">
+            <summary>
+            Communications channel to RabbitMQ message broker.
+            </summary>
+        </member>
+        <member name="M:Clients.FurnaceClient.#ctor">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="M:Clients.FurnaceClient.Call``1(System.String,System.Func{System.String},System.Func{System.String,``0})">
+            <summary>
+            Generic method to call a remove operation on a server.
+            </summary>
+            <param name="methodName">Name of the method to call.</param>
+            <param name="requestDataProvider">Request data provider. Can be null if no data is to be provided.</param>
+            <param name="resultDataExtractor">Result extractor. If this is null, the result will not be awaited for.</param>
+            <typeparam name="RESULT">Type of the result.</typeparam>
+            <returns>Result of the call.</returns>
+        </member>
+        <member name="M:Clients.FurnaceClient.GetUniqueId">
+            <summary>
+            Get next unique ID from the server. Is used by cars to acquire client ID's.
+            </summary>
+            <returns>Unique ID.</returns>
+        </member>
+        <member name="M:Clients.FurnaceClient.GetFurnaceState">
+            <summary>
+            Get current furnace state.
+            </summary>
+            <returns>Current furnace state.</returns>				
+        </member>
+        <member name="M:Clients.FurnaceClient.MeltGlass(Services.ClientDesc)">
+            <summary>
+            Try melting the glass
+            </summary>
+            <param name="client">Client descriptor.</param>
+            <returns>Cycle attempt descriptor.</returns>
+        </member>
+    </members>
+</doc>

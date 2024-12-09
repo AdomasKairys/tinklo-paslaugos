@@ -91,127 +91,57 @@ namespace Services {
       get { return global::Services.ServiceReflection.Descriptor.Services[0]; }
     }
 
-    /// <summary>Client for Furnace</summary>
-    public partial class FurnaceClient : grpc::ClientBase<FurnaceClient>
+    /// <summary>Base class for server-side implementations of Furnace</summary>
+    [grpc::BindServiceMethod(typeof(Furnace), "BindService")]
+    public abstract partial class FurnaceBase
     {
-      /// <summary>Creates a new client for Furnace</summary>
-      /// <param name="channel">The channel to use to make remote calls.</param>
+      /// <summary>
+      ///these will translate into a service operations
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public FurnaceClient(grpc::ChannelBase channel) : base(channel)
+      public virtual global::System.Threading.Tasks.Task<global::Services.IntMsg> GetUniqueId(global::Services.Empty request, grpc::ServerCallContext context)
       {
-      }
-      /// <summary>Creates a new client for Furnace that uses a custom <c>CallInvoker</c>.</summary>
-      /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public FurnaceClient(grpc::CallInvoker callInvoker) : base(callInvoker)
-      {
-      }
-      /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      protected FurnaceClient() : base()
-      {
-      }
-      /// <summary>Protected constructor to allow creation of configured clients.</summary>
-      /// <param name="configuration">The client configuration.</param>
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      protected FurnaceClient(ClientBaseConfiguration configuration) : base(configuration)
-      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
-      /// <summary>
-      ///these will translate into a service operations
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The response received from the server.</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Services.IntMsg GetUniqueId(global::Services.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual global::System.Threading.Tasks.Task<global::Services.GetFurnaceStateOutput> GetFurnaceState(global::Services.Empty request, grpc::ServerCallContext context)
       {
-        return GetUniqueId(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
-      /// <summary>
-      ///these will translate into a service operations
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The response received from the server.</returns>
+
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Services.IntMsg GetUniqueId(global::Services.Empty request, grpc::CallOptions options)
+      public virtual global::System.Threading.Tasks.Task<global::Services.CycleAttemptResult> MeltGlass(global::Services.ClientDesc request, grpc::ServerCallContext context)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_GetUniqueId, null, options, request);
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
-      /// <summary>
-      ///these will translate into a service operations
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The call object.</returns>
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Services.IntMsg> GetUniqueIdAsync(global::Services.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return GetUniqueIdAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      ///these will translate into a service operations
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The call object.</returns>
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Services.IntMsg> GetUniqueIdAsync(global::Services.Empty request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_GetUniqueId, null, options, request);
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Services.GetFurnaceStateOutput GetFurnaceState(global::Services.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return GetFurnaceState(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Services.GetFurnaceStateOutput GetFurnaceState(global::Services.Empty request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_GetFurnaceState, null, options, request);
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Services.GetFurnaceStateOutput> GetFurnaceStateAsync(global::Services.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return GetFurnaceStateAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Services.GetFurnaceStateOutput> GetFurnaceStateAsync(global::Services.Empty request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_GetFurnaceState, null, options, request);
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Services.CycleAttemptResult MeltGlass(global::Services.ClientDesc request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return MeltGlass(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Services.CycleAttemptResult MeltGlass(global::Services.ClientDesc request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_MeltGlass, null, options, request);
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Services.CycleAttemptResult> MeltGlassAsync(global::Services.ClientDesc request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return MeltGlassAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Services.CycleAttemptResult> MeltGlassAsync(global::Services.ClientDesc request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_MeltGlass, null, options, request);
-      }
-      /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      protected override FurnaceClient NewInstance(ClientBaseConfiguration configuration)
-      {
-        return new FurnaceClient(configuration);
-      }
+
+    }
+
+    /// <summary>Creates service definition that can be registered with a server</summary>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    public static grpc::ServerServiceDefinition BindService(FurnaceBase serviceImpl)
+    {
+      return grpc::ServerServiceDefinition.CreateBuilder()
+          .AddMethod(__Method_GetUniqueId, serviceImpl.GetUniqueId)
+          .AddMethod(__Method_GetFurnaceState, serviceImpl.GetFurnaceState)
+          .AddMethod(__Method_MeltGlass, serviceImpl.MeltGlass).Build();
+    }
+
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the service binding logic.
+    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
+    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, FurnaceBase serviceImpl)
+    {
+      serviceBinder.AddMethod(__Method_GetUniqueId, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Services.Empty, global::Services.IntMsg>(serviceImpl.GetUniqueId));
+      serviceBinder.AddMethod(__Method_GetFurnaceState, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Services.Empty, global::Services.GetFurnaceStateOutput>(serviceImpl.GetFurnaceState));
+      serviceBinder.AddMethod(__Method_MeltGlass, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Services.ClientDesc, global::Services.CycleAttemptResult>(serviceImpl.MeltGlass));
     }
 
   }

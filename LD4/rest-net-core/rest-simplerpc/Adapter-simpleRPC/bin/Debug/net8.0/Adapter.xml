@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Adapter</name>
+    </assembly>
+    <members>
+        <member name="T:Servers.FurnaceController">
+            <summary>
+            Furnace contract
+            </summary>
+        </member>
+        <member name="F:Servers.FurnaceController.mLogic">
+            <summary>
+            Service logic. This is created in Server.StartServer() and received through DI in constructor.
+            </summary>
+        </member>
+        <member name="M:Servers.FurnaceController.#ctor(Servers.FurnaceServiceAdapterLogic)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="logic">Logic to use. This will get passed through DI.</param>
+        </member>
+        <member name="M:Servers.FurnaceController.GetUniqueId">
+            <summary>
+            Gets unique id for client
+            </summary>
+            <returns>unique client id</returns>
+        </member>
+        <member name="M:Servers.FurnaceController.GetFurnaceState">
+            <summary>
+            Gets current furnace state
+            </summary>
+            <returns>Furnace state</returns>
+        </member>
+        <member name="M:Servers.FurnaceController.MeltGlass(Services.ClientDesc)">
+            <summary>
+            Main function that melts glass (increase heat or load glass)
+            </summary>
+            <param name="client">client information (heater or loader)</param>
+            <returns>Result of success or failure</returns>
+        </member>
+        <member name="T:Servers.State">
+            <summary>
+            Furnace state.
+            </summary>
+        </member>
+        <member name="T:Servers.FurnaceServiceAdapterLogic">
+            <summary>
+            Simple RPC Furnace contract
+            </summary>
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapterLogic.#ctor">
+            <summary>
+            Constructor for simple rpc furnace service adapter, connects to gRPC server 
+            </summary>
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapterLogic.GetUniqueId">
+            <summary>
+            Get next unique ID from the server. Is used by cars to acquire client ID's.
+            </summary>
+            <param name="input">Not used.</param>
+            <param name="context">Call context.</param>
+            <returns>Unique ID.</returns>
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapterLogic.GetFurnaceState">
+            <summary>
+            Get current light state.
+            </summary>
+            <param name="input">Not used.</param>
+            <param name="context">Call context.</param>
+            <returns>Current light state.</returns>				
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapterLogic.MeltGlass(Services.ClientDesc)">
+            <summary>
+            Try melting glass
+            </summary>
+            <param name="input">Client descriptor.</param>
+            <param name="context">Call context.</param>
+            <returns>Attemp result descriptor.</returns>
+        </member>
+        <member name="F:Servers.Server.log">
+            <summary>
+            Logger for this class.
+            </summary>
+        </member>
+        <member name="M:Servers.Server.ConfigureLogging">
+            <summary>
+            Configure loggin subsystem.
+            </summary>
+        </member>
+        <member name="M:Servers.Server.Main(System.String[])">
+            <summary>
+            Program entry point.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
+        <member name="M:Servers.Server.Run(System.String[])">
+            <summary>
+            Program body.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
+        <member name="M:Servers.Server.StartServer(System.String[])">
+            <summary>
+            Starts integrated server.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
+    </members>
+</doc>

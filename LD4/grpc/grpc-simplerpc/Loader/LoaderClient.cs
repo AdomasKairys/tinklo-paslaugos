@@ -46,7 +46,7 @@ class LoaderClient
 		{
 			try {
 				//connect to the server, get service proxy
-				var channel = GrpcChannel.ForAddress("http://127.0.0.1:5000");
+				var channel = GrpcChannel.ForAddress("http://127.0.0.1:5001");
 
 				var furnace = new Furnace.FurnaceClient(channel);
 

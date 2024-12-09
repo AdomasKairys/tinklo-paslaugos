@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
-		<Protobuf Include="Protos\service.proto" GrpcServices="client" />
+		<Protobuf Include="Protos\service.proto" GrpcServices="server"/>
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="NLog" Version="5.3.3" />

@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "dgSpecHash": "l1ZI2j8LNF0ubLs1W0adAgexO0/Lh3gBkKPe5135tsJcpdya3w14SzKUIOb+BG3GmBsdy/WmU+vPaXjFEGlC0g==",
+  "success": true,
+  "projectFilePath": "D:\\repos\\tinklo-paslaugos\\LD4\\rest-net-core\\rest-rabbitmq\\Adapter-RabbitMQ\\Adapter.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\kairy\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\kairy\\.nuget\\packages\\microsoft.openapi\\1.6.14\\microsoft.openapi.1.6.14.nupkg.sha512",
+    "C:\\Users\\kairy\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\kairy\\.nuget\\packages\\nlog\\5.3.3\\nlog.5.3.3.nupkg.sha512",
+    "C:\\Users\\kairy\\.nuget\\packages\\rabbitmq.client\\6.8.1\\rabbitmq.client.6.8.1.nupkg.sha512",
+    "C:\\Users\\kairy\\.nuget\\packages\\swashbuckle.aspnetcore\\6.8.0\\swashbuckle.aspnetcore.6.8.0.nupkg.sha512",
+    "C:\\Users\\kairy\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.8.0\\swashbuckle.aspnetcore.swagger.6.8.0.nupkg.sha512",
+    "C:\\Users\\kairy\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.8.0\\swashbuckle.aspnetcore.swaggergen.6.8.0.nupkg.sha512",
+    "C:\\Users\\kairy\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.8.0\\swashbuckle.aspnetcore.swaggerui.6.8.0.nupkg.sha512",
+    "C:\\Users\\kairy\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512",
+    "C:\\Users\\kairy\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

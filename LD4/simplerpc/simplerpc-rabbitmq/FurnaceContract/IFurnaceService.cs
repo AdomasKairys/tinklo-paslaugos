@@ -73,5 +73,5 @@ public interface IFurnaceService
 	/// </summary>
 	/// <param name="car">Car descriptor.</param>
 	/// <returns>Pass result descriptor.</returns>
-	CycleAttemptResult MeltingGlass(ClientDesc client);
+	CycleAttemptResult MeltGlass(ClientDesc client);
 }

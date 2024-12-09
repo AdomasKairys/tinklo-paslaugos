@@ -1,3 +1,4 @@
+extern alias simplerpc;
 namespace Clients;
 
 using System;
@@ -9,14 +10,14 @@ using RabbitMQ.Client.Events;
 using Newtonsoft.Json;
 using NLog;
 
-using Services;
+using SimpleRpc = simplerpc::Services;
 
 
 /// <summary>
 /// <para>RPC style wrapper for the service.</para>
 /// <para>Static members are thread safe, instance members are not.</para>
 /// </summary>
-class FurnaceClient : IFurnaceService
+class FurnaceClient : SimpleRpc.IFurnaceService
 {
 	/// <summary>
 	/// Name of the message exchange.
@@ -114,7 +115,7 @@ class FurnaceClient : IFurnaceService
 
 		//create request
 		var request =
-			new RPCMessage()
+			new SimpleRpc.RPCMessage()
 			{
 				Action = $"Call_{methodName}",
 				Data = requestDataProvider != null ? requestDataProvider() : null
@@ -142,7 +143,7 @@ class FurnaceClient : IFurnaceService
 					//prevent owerwriting of result, check if the expected message is received
 					if( !isResultReady && (delivery.BasicProperties.CorrelationId == requestProps.CorrelationId) )
 					{
-						var response = JsonConvert.DeserializeObject<RPCMessage>(Encoding.UTF8.GetString(delivery.Body.ToArray()));
+						var response = JsonConvert.DeserializeObject<SimpleRpc.RPCMessage>(Encoding.UTF8.GetString(delivery.Body.ToArray()));
 						if( response.Action == $"Result_{methodName}" )
 						{
 							//extract the result
@@ -213,13 +214,13 @@ class FurnaceClient : IFurnaceService
 	/// Get current furnace state.
 	/// </summary>
 	/// <returns>Current furnace state.</returns>				
-	public FurnaceState GetFurnaceState() 
+	public SimpleRpc.FurnaceState GetFurnaceState() 
 	{
 		var result =
 			Call(
 				nameof(GetFurnaceState),
 				null,
-				(data) => JsonConvert.DeserializeAnonymousType(data, new {Value = FurnaceState.Pouring}).Value
+				(data) => JsonConvert.DeserializeAnonymousType(data, new {Value = SimpleRpc.FurnaceState.Pouring}).Value
 			);
 		return result;
 	}
@@ -229,13 +230,13 @@ class FurnaceClient : IFurnaceService
 	/// </summary>
 	/// <param name="client">Client descriptor.</param>
 	/// <returns>Cycle attempt descriptor.</returns>
-	public CycleAttemptResult MeltGlass(ClientDesc client)
+	public SimpleRpc.CycleAttemptResult MeltGlass(SimpleRpc.ClientDesc client)
 	{
 		var result =
 			Call(
 				nameof(MeltGlass),
 				() => JsonConvert.SerializeObject(client),
-				(data) => JsonConvert.DeserializeObject<CycleAttemptResult>(data)
+				(data) => JsonConvert.DeserializeObject<SimpleRpc.CycleAttemptResult>(data)
 			);
 		return result;
 	}

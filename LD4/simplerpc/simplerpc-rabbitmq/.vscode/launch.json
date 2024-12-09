@@ -2,24 +2,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Furnace-rest",
+            "name": "Furnace-RabbitMQ",
             "type": "coreclr",
             "request": "launch",           
-            "preLaunchTask": "build-Furnace-rest",
-            "program": "${workspaceFolder}/Furnace-rest/bin/Debug/net8.0/Furnace.dll",
+            "preLaunchTask": "build-Furnace-RabbitMQ",
+            "program": "${workspaceFolder}/Furnace-RabbitMQ/bin/Debug/net8.0/Furnace.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Furnace-rest",
+            "cwd": "${workspaceFolder}/Furnace-RabbitMQ",
             "console": "externalTerminal",
             "stopAtEntry": false
         },
         {
-            "name": "Adapter-rest",
+            "name": "Adapter-RabbitMQ",
             "type": "coreclr",
             "request": "launch",           
-            "preLaunchTask": "build-Adapter-rest",
-            "program": "${workspaceFolder}/Adapter-rest/bin/Debug/net8.0/Adapter.dll",
+            "preLaunchTask": "build-Adapter-RabbitMQ",
+            "program": "${workspaceFolder}/Adapter-RabbitMQ/bin/Debug/net8.0/Adapter.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Adapter-rest",
+            "cwd": "${workspaceFolder}/Adapter-RabbitMQ",
             "console": "externalTerminal",
             "stopAtEntry": false
         },

@@ -99,7 +99,7 @@ class HeaterClient
 						{
 							//try passing 
 							mLog.Info("Furnace is working, trying to increase heat.");							
-							var par = furnace.MeltingGlass(client);
+							var par = furnace.MeltGlass(client);
 
 							//handle result
 							if( par.IsSuccess )

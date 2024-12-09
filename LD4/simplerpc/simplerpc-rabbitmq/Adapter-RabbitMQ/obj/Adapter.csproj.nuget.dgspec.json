@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\Adapter-rest\\Adapter.csproj": {}
+    "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\Adapter-RabbitMQ\\Adapter.csproj": {}
   },
   "projects": {
-    "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\Adapter-rest\\Adapter.csproj": {
+    "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\Adapter-RabbitMQ\\Adapter.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\Adapter-rest\\Adapter.csproj",
+        "projectUniqueName": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\Adapter-RabbitMQ\\Adapter.csproj",
         "projectName": "Adapter",
-        "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\Adapter-rest\\Adapter.csproj",
+        "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\Adapter-RabbitMQ\\Adapter.csproj",
         "packagesPath": "C:\\Users\\kairy\\.nuget\\packages\\",
-        "outputPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\Adapter-rest\\obj\\",
+        "outputPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\Adapter-RabbitMQ\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\kairy\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,8 +28,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\FurnaceContract\\FurnaceContract.csproj": {
-                "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\FurnaceContract\\FurnaceContract.csproj"
+              "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\FurnaceContract\\FurnaceContract.csproj": {
+                "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\FurnaceContract\\FurnaceContract.csproj"
               }
             }
           }
@@ -49,31 +49,17 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Grpc.AspNetCore": {
-              "target": "Package",
-              "version": "[2.66.0, )"
-            },
-            "Grpc.Net.Client": {
-              "target": "Package",
-              "version": "[2.66.0, )"
-            },
             "NLog": {
               "target": "Package",
               "version": "[5.3.3, )"
             },
-            "NSwag.AspNetCore": {
-              "target": "Package",
-              "version": "[14.1.0, )"
-            },
-            "NSwag.MSBuild": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[14.1.0, )"
-            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[6.8.1, )"
             },
             "SimpleRpc": {
               "target": "Package",
@@ -107,14 +93,14 @@
         }
       }
     },
-    "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\FurnaceContract\\FurnaceContract.csproj": {
+    "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\FurnaceContract\\FurnaceContract.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\FurnaceContract\\FurnaceContract.csproj",
+        "projectUniqueName": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\FurnaceContract\\FurnaceContract.csproj",
         "projectName": "FurnaceContract",
-        "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\FurnaceContract\\FurnaceContract.csproj",
+        "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\FurnaceContract\\FurnaceContract.csproj",
         "packagesPath": "C:\\Users\\kairy\\.nuget\\packages\\",
-        "outputPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rest\\FurnaceContract\\obj\\",
+        "outputPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-rabbitmq\\FurnaceContract\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\kairy\\AppData\\Roaming\\NuGet\\NuGet.Config",

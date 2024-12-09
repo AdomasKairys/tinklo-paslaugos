@@ -4,7 +4,6 @@ namespace Servers;
 
 using NLog;
 
-using Services;
 using SimpleRpc = simplerpc::Services;
 
 /// <summary>
@@ -13,7 +12,7 @@ using SimpleRpc = simplerpc::Services;
 public class FurnaceServiceAdapter : SimpleRpc.IFurnaceService
 {
 	//NOTE: instance-per-request service would need logic to be static or injected from a singleton instance
-	private readonly FurnaceClient? furnace;
+	private readonly Clients.FurnaceClient? furnace;
     private readonly Logger mLog = LogManager.GetCurrentClassLogger();
 
 	/// <summary>
@@ -22,7 +21,7 @@ public class FurnaceServiceAdapter : SimpleRpc.IFurnaceService
 	public FurnaceServiceAdapter(){
 		while(true){
 			try{
-				furnace = new FurnaceClient();
+				furnace = new Clients.FurnaceClient();
 				furnace.GetFurnaceState(); // arbitrary call to check connection
 				break;
 			}
@@ -48,23 +47,16 @@ public class FurnaceServiceAdapter : SimpleRpc.IFurnaceService
 	/// <returns>Furnace state</returns>
 	public SimpleRpc.FurnaceState GetFurnaceState()
 	{
-		return (SimpleRpc.FurnaceState)furnace!.GetFurnaceState();
+		return furnace!.GetFurnaceState();
 	}
 	/// <summary>
 	/// Main function that melts glass (increase heat or load glass)
 	/// </summary>
 	/// <param name="client">client information (heater or loader)</param>
 	/// <returns>Result of success or failure</returns>
-	public SimpleRpc.CycleAttemptResult MeltingGlass(SimpleRpc.ClientDesc client)
+	public SimpleRpc.CycleAttemptResult MeltGlass(SimpleRpc.ClientDesc client)
 	{
-		ClientDesc clientDesc = new ClientDesc() {
-			ClientId = client.ClientId,
-			ClientType = (ClientType) client.ClientType, 
-			GeneratedValue= client.GeneratedValue};
-		CycleAttemptResult cycleAttemptResultRabbitMQ = furnace!.MeltGlass(clientDesc);
-		SimpleRpc.CycleAttemptResult cycleAttemptResultSRPC = new SimpleRpc.CycleAttemptResult() {
-			IsSuccess = cycleAttemptResultRabbitMQ.IsSuccess,
-		 	FailReason = cycleAttemptResultRabbitMQ.FailReason};
-		return  cycleAttemptResultSRPC;
+		SimpleRpc.CycleAttemptResult cycleAttemptResultRabbitMQ = furnace!.MeltGlass(client);
+		return  cycleAttemptResultRabbitMQ;
 	}
 }

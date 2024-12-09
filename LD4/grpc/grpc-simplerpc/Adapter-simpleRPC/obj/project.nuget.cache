@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TFHZM0YP7RL//A6f34tHYowD5o9MXqjI8zpZHiaNGJWxZ4G5glXiDcpWgm0AlnnXstEbOuhwagCoXmImYFnEtw==",
+  "dgSpecHash": "yAJscPmq8sJ2kh6QeRfleeW3IY7ZXDE5csSHDdpzVQcp4u0XpqucRXBvVBTjkmRIwlVyp2dh8DxFPHd7atTNgQ==",
   "success": true,
-  "projectFilePath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\Adapter-gRPC\\Adapter.csproj",
+  "projectFilePath": "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\Adapter-simpleRPC\\Adapter.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\kairy\\.nuget\\packages\\castle.core\\4.4.0\\castle.core.4.4.0.nupkg.sha512",
     "C:\\Users\\kairy\\.nuget\\packages\\ceras\\4.1.7\\ceras.4.1.7.nupkg.sha512",

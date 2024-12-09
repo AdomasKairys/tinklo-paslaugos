@@ -2,6 +2,9 @@ extern alias simplerpc;
 
 namespace Servers;
 
+using SimpleRpc.Serialization.Hyperion;
+using SimpleRpc.Transports;
+using SimpleRpc.Transports.Http.Client;
 using Grpc.Core;
 using NLog;
 
@@ -16,9 +19,8 @@ using SimpleRpc = simplerpc::Services;
 public class FurnaceServiceAdapter : Services.Furnace.FurnaceBase
 {
 	//NOTE: instance-per-request service would need logic to be static or injected from a singleton instance
-	private readonly FurnaceLogic mLogic = new FurnaceLogic();
 	
-	private readonly IFurnaceService? furnace;
+	private readonly SimpleRpc.IFurnaceService? furnace;
     private readonly Logger mLog = LogManager.GetCurrentClassLogger();
 
 	/// <summary>
@@ -27,7 +29,7 @@ public class FurnaceServiceAdapter : Services.Furnace.FurnaceBase
 	public FurnaceServiceAdapter(){
 		while(true){
 			try{
-				mLog.Info("Connecting to gRPC server");
+				mLog.Info("Connecting to simple RPC server");
 				var sc = new ServiceCollection();
 				sc
 					.AddSimpleRpcClient(
@@ -40,15 +42,16 @@ public class FurnaceServiceAdapter : Services.Furnace.FurnaceBase
 					)
 					.AddSimpleRpcHyperionSerializer();
 
-				sc.AddSimpleRpcProxy<IFurnaceService>("furnaceService"); //must be same as on line 77
+				sc.AddSimpleRpcProxy<SimpleRpc.IFurnaceService>("furnaceService"); //must be same as on line 77
 
 				var sp = sc.BuildServiceProvider();
 
-				furnace = sp.GetService<IFurnaceService>();
+				furnace = sp.GetService<SimpleRpc.IFurnaceService>();
+				furnace!.GetFurnaceState();
 				break;
 			}
 			catch(Exception e){
-				mLog.Warn(e, "Failed to connect to gRPC server, retrying");
+				mLog.Warn(e, "Failed to connect to simple RPC server, retrying");
 				Thread.Sleep(2000);
 			}
 		}
@@ -62,7 +65,7 @@ public class FurnaceServiceAdapter : Services.Furnace.FurnaceBase
 	/// <returns>Unique ID.</returns>
 	public override Task<IntMsg> GetUniqueId(Empty input, ServerCallContext context)
 	{
-		var result = new IntMsg { Value = furnace.GetUniqueId() };
+		var result = new IntMsg { Value = furnace!.GetUniqueId() };
 		return Task.FromResult(result);
 	}
 
@@ -74,7 +77,7 @@ public class FurnaceServiceAdapter : Services.Furnace.FurnaceBase
 	/// <returns>Current light state.</returns>				
 	public override Task<GetFurnaceStateOutput> GetFurnaceState(Empty input, ServerCallContext context)
 	{
-		var logicFurnaceState = furnace.GetFurnaceState();
+		var logicFurnaceState = furnace!.GetFurnaceState();
 		var serviceFurnaceState = (Services.FurnaceState)logicFurnaceState; //this will only work properly if enumerations are by-value compatible
 
 		var result = new GetFurnaceStateOutput { Value = serviceFurnaceState };
@@ -91,14 +94,14 @@ public class FurnaceServiceAdapter : Services.Furnace.FurnaceBase
 	{
 		//convert input to the format expected by logic
 		var client = 
-			new ClientDesc { 
+			new SimpleRpc.ClientDesc { 
 				ClientId = input.ClientId,
-				ClientType = (ClientType)input.ClientType,
+				ClientType = (SimpleRpc.ClientType)input.ClientType,
 				GeneratedValue = input.GeneratedValue
 			};
 
 		//
-		var logicResult = furnace.MeltGlass(client);
+		var logicResult = furnace!.MeltGlass(client);
 
 		//convert result to the format expected by gRPC
 		var result = 

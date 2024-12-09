@@ -70,14 +70,14 @@ public class Server
 
 		//configure integrated server
 		builder.WebHost.ConfigureKestrel(opts => {
-			opts.Listen(IPAddress.Loopback, 5000);
+			opts.Listen(IPAddress.Loopback, 5001);
 		});
 
 		//add support for GRPC services
 		builder.Services.AddGrpc();
 
 		//add the actual services
-		builder.Services.AddSingleton(new FurnaceService());	
+		builder.Services.AddSingleton(new FurnaceServiceAdapter());	
 
 		//build the server
 		var app = builder.Build();
@@ -86,7 +86,7 @@ public class Server
 		app.UseRouting();
 
 		//configure routes
-		app.MapGrpcService<FurnaceService>();
+		app.MapGrpcService<FurnaceServiceAdapter>();
 		
 		//run the server
 		app.Run();

@@ -1,0 +1,52 @@
+{
+   // Use IntelliSense to find out which attributes exist for C# debugging
+   // Use hover for the description of the existing attributes
+   // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+   "version": "0.2.0",
+   "configurations": [
+    {
+        "name": "Furnace-RabbitMQ",
+        "type": "coreclr",
+        "request": "launch",           
+        "preLaunchTask": "build-Furnace-RabbitMQ",
+        "program": "${workspaceFolder}/Furnace-rabbitMQ/bin/Debug/net8.0/Furnace.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/Furnace-RabbitMQ",
+        "console": "externalTerminal",
+        "stopAtEntry": false
+    },
+    {
+        "name": "Adapter-RabbitMQ",
+        "type": "coreclr",
+        "request": "launch",           
+        "preLaunchTask": "build-Adapter-RabbitMQ",
+        "program": "${workspaceFolder}/Adapter-rabbitMQ/bin/Debug/net8.0/Adapter.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/Adapter-RabbitMQ",
+        "console": "externalTerminal",
+        "stopAtEntry": false
+    },
+    {
+        "name": "Heater",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build-Heater",
+        "program": "${workspaceFolder}/Heater/bin/Debug/net8.0/Heater.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/Heater",
+        "console": "externalTerminal",
+        "stopAtEntry": false
+    },
+    {
+        "name": "Loader",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build-Loader",
+        "program": "${workspaceFolder}/Loader/bin/Debug/net8.0/Loader.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/Loader",
+        "console": "externalTerminal",
+        "stopAtEntry": false
+    }  
+    ]
+}

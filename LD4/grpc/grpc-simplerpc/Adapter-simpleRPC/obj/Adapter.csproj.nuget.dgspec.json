@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\Adapter-gRPC\\Adapter.csproj": {}
+    "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\Adapter-simpleRPC\\Adapter.csproj": {}
   },
   "projects": {
-    "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\Adapter-gRPC\\Adapter.csproj": {
+    "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\Adapter-simpleRPC\\Adapter.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\Adapter-gRPC\\Adapter.csproj",
+        "projectUniqueName": "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\Adapter-simpleRPC\\Adapter.csproj",
         "projectName": "Adapter",
-        "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\Adapter-gRPC\\Adapter.csproj",
+        "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\Adapter-simpleRPC\\Adapter.csproj",
         "packagesPath": "C:\\Users\\kairy\\.nuget\\packages\\",
-        "outputPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\Adapter-gRPC\\obj\\",
+        "outputPath": "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\Adapter-simpleRPC\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\kairy\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,8 +28,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\FurnaceContract\\FurnaceContract.csproj": {
-                "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\FurnaceContract\\FurnaceContract.csproj"
+              "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\FurnaceContract\\FurnaceContract.csproj": {
+                "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\FurnaceContract\\FurnaceContract.csproj"
               }
             }
           }
@@ -93,14 +93,14 @@
         }
       }
     },
-    "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\FurnaceContract\\FurnaceContract.csproj": {
+    "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\FurnaceContract\\FurnaceContract.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\FurnaceContract\\FurnaceContract.csproj",
+        "projectUniqueName": "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\FurnaceContract\\FurnaceContract.csproj",
         "projectName": "FurnaceContract",
-        "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\FurnaceContract\\FurnaceContract.csproj",
+        "projectPath": "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\FurnaceContract\\FurnaceContract.csproj",
         "packagesPath": "C:\\Users\\kairy\\.nuget\\packages\\",
-        "outputPath": "D:\\repos\\tinklo-paslaugos\\LD4\\simplerpc\\simplerpc-grpc\\FurnaceContract\\obj\\",
+        "outputPath": "D:\\repos\\tinklo-paslaugos\\LD4\\grpc\\grpc-simplerpc\\FurnaceContract\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\kairy\\AppData\\Roaming\\NuGet\\NuGet.Config",

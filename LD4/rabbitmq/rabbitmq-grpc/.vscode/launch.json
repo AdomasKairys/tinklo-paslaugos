@@ -1,0 +1,49 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Furnace-gRPC",
+            "type": "coreclr",
+            "request": "launch",           
+            "preLaunchTask": "build-Furnace-gRPC",
+            "program": "${workspaceFolder}/Furnace-gRPC/bin/Debug/net8.0/Furnace.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Furnace-gRPC",
+            "console": "externalTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Adapter-gRPC",
+            "type": "coreclr",
+            "request": "launch",           
+            "preLaunchTask": "build-Adapter-gRPC",
+            "program": "${workspaceFolder}/Adapter-gRPC/bin/Debug/net8.0/Adapter.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Adapter-gRPC",
+            "console": "externalTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Heater",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-Heater",
+            "program": "${workspaceFolder}/Heater/bin/Debug/net8.0/Heater.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Heater",
+            "console": "externalTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "Loader",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-Loader",
+            "program": "${workspaceFolder}/Loader/bin/Debug/net8.0/Loader.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Loader",
+            "console": "externalTerminal",
+            "stopAtEntry": false
+        }
+    ]
+}
