@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "YMAYQFMY7qMs7I7E9FOOjW/6cOY9foGsfAWVC8O3thg=",
+  "Source": "AdapterSRPC",
+  "BasePath": "_content/AdapterSRPC",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

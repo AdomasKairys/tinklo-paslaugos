@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AdapterRest</name>
+    </assembly>
+    <members>
+        <member name="T:Servers.FurnaceController">
+            <summary>
+            Furnace contract
+            </summary>
+        </member>
+        <member name="F:Servers.FurnaceController.mAdapter">
+            <summary>
+            Service adapter. This is created in Server.StartServer() and received through DI in constructor.
+            </summary>
+        </member>
+        <member name="M:Servers.FurnaceController.#ctor(Servers.FurnaceServiceAdapter)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="adapter">adapter to use. This will get passed through DI.</param>
+        </member>
+        <member name="M:Servers.FurnaceController.GetUniqueId">
+            <summary>
+            Gets unique id for client
+            </summary>
+            <returns>unique client id</returns>
+        </member>
+        <member name="M:Servers.FurnaceController.GetFurnaceState">
+            <summary>
+            Gets current furnace state
+            </summary>
+            <returns>Furnace state</returns>
+        </member>
+        <member name="M:Servers.FurnaceController.MeltGlass(Services.ClientDesc)">
+            <summary>
+            Main function that melts glass (increase heat or load glass)
+            </summary>
+            <param name="client">client information (heater or loader)</param>
+            <returns>Result of success or failure</returns>
+        </member>
+        <member name="T:Servers.State">
+            <summary>
+            Furnace state.
+            </summary>
+        </member>
+        <member name="T:Servers.FurnaceServiceAdapter">
+            <summary>
+            Rest to gRPC Furnace adapter
+            </summary>
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapter.#ctor">
+            <summary>
+            Constructor for grpc furnace service adapter, connects to gRPC server 
+            </summary>
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapter.GetUniqueId">
+            <summary>
+            Get next unique ID from the server. Is used by cars to acquire client ID's.
+            </summary>
+            <param name="input">Not used.</param>
+            <param name="context">Call context.</param>
+            <returns>Unique ID.</returns>
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapter.GetFurnaceState">
+            <summary>
+            Get current light state.
+            </summary>
+            <param name="input">Not used.</param>
+            <param name="context">Call context.</param>
+            <returns>Current light state.</returns>				
+        </member>
+        <member name="M:Servers.FurnaceServiceAdapter.MeltGlass(Services.ClientDesc)">
+            <summary>
+            Try melting glass
+            </summary>
+            <param name="input">Client descriptor.</param>
+            <param name="context">Call context.</param>
+            <returns>Attemp result descriptor.</returns>
+        </member>
+        <member name="F:Servers.Server.log">
+            <summary>
+            Logger for this class.
+            </summary>
+        </member>
+        <member name="M:Servers.Server.ConfigureLogging">
+            <summary>
+            Configure loggin subsystem.
+            </summary>
+        </member>
+        <member name="M:Servers.Server.Main(System.String[])">
+            <summary>
+            Program entry point.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
+        <member name="M:Servers.Server.Run(System.String[])">
+            <summary>
+            Program body.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
+        <member name="M:Servers.Server.StartServer(System.String[])">
+            <summary>
+            Starts integrated server.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
+        <member name="T:Services.ServiceReflection">
+            <summary>Holder for reflection information generated from Protos/service.proto</summary>
+        </member>
+        <member name="P:Services.ServiceReflection.Descriptor">
+            <summary>File descriptor for Protos/service.proto</summary>
+        </member>
+        <member name="T:Services.FurnaceState">
+             <summary>
+            enumeration
+             </summary>
+        </member>
+        <member name="T:Services.Empty">
+             <summary>
+            this is used for calls that do accept inputs or produce outputs
+             </summary>
+        </member>
+        <member name="T:Services.IntMsg">
+             <summary>
+            single value structures
+             </summary>
+        </member>
+        <member name="F:Services.IntMsg.ValueFieldNumber">
+            <summary>Field number for the "value" field.</summary>
+        </member>
+        <member name="F:Services.BoolMsg.ValueFieldNumber">
+            <summary>Field number for the "value" field.</summary>
+        </member>
+        <member name="T:Services.GetFurnaceStateOutput">
+             <summary>
+            light state output
+             </summary>
+        </member>
+        <member name="F:Services.GetFurnaceStateOutput.ValueFieldNumber">
+            <summary>Field number for the "value" field.</summary>
+        </member>
+        <member name="T:Services.ClientDesc">
+             <summary>
+            car descriptor
+             </summary>
+        </member>
+        <member name="F:Services.ClientDesc.ClientIdFieldNumber">
+            <summary>Field number for the "ClientId" field.</summary>
+        </member>
+        <member name="F:Services.ClientDesc.ClientTypeFieldNumber">
+            <summary>Field number for the "ClientType" field.</summary>
+        </member>
+        <member name="F:Services.ClientDesc.GeneratedValueFieldNumber">
+            <summary>Field number for the "GeneratedValue" field.</summary>
+        </member>
+        <member name="T:Services.CycleAttemptResult">
+             <summary>
+            passing attempt result descriptor
+             </summary>
+        </member>
+        <member name="F:Services.CycleAttemptResult.IsSuccessFieldNumber">
+            <summary>Field number for the "IsSuccess" field.</summary>
+        </member>
+        <member name="F:Services.CycleAttemptResult.FailReasonFieldNumber">
+            <summary>Field number for the "FailReason" field.</summary>
+        </member>
+        <member name="T:Services.Furnace">
+             <summary>
+            this will translate into service and service client stubs
+             </summary>
+        </member>
+        <member name="P:Services.Furnace.Descriptor">
+            <summary>Service descriptor</summary>
+        </member>
+        <member name="T:Services.Furnace.FurnaceClient">
+            <summary>Client for Furnace</summary>
+        </member>
+        <member name="M:Services.Furnace.FurnaceClient.#ctor(Grpc.Core.ChannelBase)">
+            <summary>Creates a new client for Furnace</summary>
+            <param name="channel">The channel to use to make remote calls.</param>
+        </member>
+        <member name="M:Services.Furnace.FurnaceClient.#ctor(Grpc.Core.CallInvoker)">
+            <summary>Creates a new client for Furnace that uses a custom <c>CallInvoker</c>.</summary>
+            <param name="callInvoker">The callInvoker to use to make remote calls.</param>
+        </member>
+        <member name="M:Services.Furnace.FurnaceClient.#ctor">
+            <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
+        </member>
+        <member name="M:Services.Furnace.FurnaceClient.#ctor(Grpc.Core.ClientBase.ClientBaseConfiguration)">
+            <summary>Protected constructor to allow creation of configured clients.</summary>
+            <param name="configuration">The client configuration.</param>
+        </member>
+        <member name="M:Services.Furnace.FurnaceClient.GetUniqueId(Services.Empty,Grpc.Core.Metadata,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+             <summary>
+            these will translate into a service operations
+             </summary>
+             <param name="request">The request to send to the server.</param>
+             <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+             <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+             <param name="cancellationToken">An optional token for canceling the call.</param>
+             <returns>The response received from the server.</returns>
+        </member>
+        <member name="M:Services.Furnace.FurnaceClient.GetUniqueId(Services.Empty,Grpc.Core.CallOptions)">
+             <summary>
+            these will translate into a service operations
+             </summary>
+             <param name="request">The request to send to the server.</param>
+             <param name="options">The options for the call.</param>
+             <returns>The response received from the server.</returns>
+        </member>
+        <member name="M:Services.Furnace.FurnaceClient.GetUniqueIdAsync(Services.Empty,Grpc.Core.Metadata,System.Nullable{System.DateTime},System.Threading.CancellationToken)">
+             <summary>
+            these will translate into a service operations
+             </summary>
+             <param name="request">The request to send to the server.</param>
+             <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+             <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+             <param name="cancellationToken">An optional token for canceling the call.</param>
+             <returns>The call object.</returns>
+        </member>
+        <member name="M:Services.Furnace.FurnaceClient.GetUniqueIdAsync(Services.Empty,Grpc.Core.CallOptions)">
+             <summary>
+            these will translate into a service operations
+             </summary>
+             <param name="request">The request to send to the server.</param>
+             <param name="options">The options for the call.</param>
+             <returns>The call object.</returns>
+        </member>
+        <member name="M:Services.Furnace.FurnaceClient.NewInstance(Grpc.Core.ClientBase.ClientBaseConfiguration)">
+            <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
+        </member>
+    </members>
+</doc>
